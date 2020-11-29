@@ -11,7 +11,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class myWGraph_DSTest
+class myDWGraph_DSTest
 {
 
     private static DWGraph_DS g;
@@ -52,7 +52,7 @@ class myWGraph_DSTest
     @Test
     public void addNode()
     {
-        createWGraph(1000,1000);
+        createWGraph(10,10);
 
         int t = (int) g.getV().stream().count();
 
@@ -90,11 +90,12 @@ class myWGraph_DSTest
 
 
         assertEquals(2.770, g.getEdge(0,1).getWeight(),0.001);
-        assertEquals(2.351, g.getEdge(0,6).getWeight(),0.001);
-        assertEquals(-1.0, g.getEdge(7,1).getWeight(),0.001);
+        assertEquals(2.351, g.getEdge(6,0).getWeight(),0.001);
         assertEquals(4.20, g.getEdge(7,6).getWeight(),0.001);
-        assertEquals(0.0, g.getEdge(5,5).getWeight(),0.001);
-        assertEquals(9.110, g.getEdge(4,5).getWeight(),0.001);
+        assertEquals(9.11, g.getEdge(4,5).getWeight(),0.001);
+
+        assertNull(g.getEdge(1,0));
+        assertNull(g.getEdge(5,5));
 
     }
 
@@ -106,11 +107,20 @@ class myWGraph_DSTest
 
         assertTrue(g.hasEdge(0,1));
         assertTrue(g.hasEdge(0,6));
-        assertTrue(g.hasEdge(7,6));
-        assertTrue(g.hasEdge(4,5));
-        assertTrue(g.hasEdge(9,9));
-
+        assertFalse(g.hasEdge(7,6));
+        assertFalse(g.hasEdge(4,5));
+        assertFalse(g.hasEdge(9,9));
         assertFalse(g.hasEdge(7, 1));
+
+        g.connect(1,7,12.3);
+        assertFalse(g.hasEdge(7, 1));
+
+        g.connect(7,1,1.0);
+        assertTrue(g.hasEdge(7, 1));
+
+        g.removeEdge(0,1);
+        assertFalse(g.hasEdge(0,1));
+
 
     }
 
@@ -130,8 +140,8 @@ class myWGraph_DSTest
     {
         createWGraph(n, (int)(1.5*n));
         int key = keys.get(rand.nextInt(g.nodeSize()));
-        //System.out.println("NODE_ID:   NEIGHBORS:");
-        //printV(g.getNode(key));
+        System.out.println("NODE_ID:   NEIGHBORS:");
+        printV(g.getNode(key));
 
     }
 
@@ -157,7 +167,7 @@ class myWGraph_DSTest
 
         assertFalse(g.hasEdge(5,0));
         assertFalse(g.hasEdge(0,2));
-        assertTrue(g.hasEdge(7,6));
+        assertTrue(g.hasEdge(7,8));
         assertNull(g.getNode(5));
 
         for(int key : keys)
@@ -189,7 +199,6 @@ class myWGraph_DSTest
 
         assertFalse(g.hasEdge(0,6));
         assertFalse(g.hasEdge(0,1));
-        assertTrue(g.hasEdge(7,6));
 
         ArrayList<Integer> neiKeys = new ArrayList<Integer>();
 
@@ -239,9 +248,10 @@ class myWGraph_DSTest
     @Test
     void getMC()
     {
-        createWGraph(n, 10*n);
+        createWGraph(1000, 3);
+        g.connect(9,9,50.0);
 
-        assertEquals(n+10*n, g.getMC());
+        assertEquals(1003, g.getMC());
     }
 
     /* ***************************** HELP FUNCTIONS ************************************* */
@@ -254,7 +264,7 @@ class myWGraph_DSTest
 
         for(int i = 0; i < numOfNones; i++)
         {
-            g.addNode(new node_data i);
+            g.addNode(new NodeData(i));
             keys.add(i);
         }
 
@@ -275,35 +285,40 @@ class myWGraph_DSTest
 
     static void printV()
     {
-        Iterator<node_info> it1 = g.getV().iterator();
+        Iterator<node_data> it1 = g.getV().iterator();
 
         while(it1.hasNext())
         {
-            node_info node = it1.next();
+            node_data node = it1.next();
             System.out.print("\n" + node.getKey());
 
-            Iterator<node_info> it2 = g.getV(node.getKey()).iterator();
+            Iterator<edge_data> it2 = g.getE(node.getKey()).iterator();     // .iterator();
             System.out.print(" ----->");
 
             while(it2.hasNext())
             {
-                node_info nei = it2.next();
-                System.out.print(" " + nei.getKey() + "(" + df2.format(g.getEdge(nei.getKey(),node.getKey())) + ")" + ",");
+                node_data nei = g.getNode(it2.next().getDest());
+                if(g.hasEdge(node.getKey(),nei.getKey()))
+                {
+                    System.out.print(" " + nei.getKey() + "(" + df2.format(g.getEdge(nei.getKey(),node.getKey()).getWeight()) + ")" + ",");
+                }
             }
         }
 
     }
 
-    static void printV(node_info node)
+    static void printV(node_data node)
     {
-        Iterator<node_info> it = g.getV(node.getKey()).iterator();
+        Iterator<edge_data> it = g.getE(node.getKey()).iterator();     // .iterator();
         System.out.print(node.getKey() + " ----->");
 
         while(it.hasNext())
         {
-            node_info nei = it.next();
-            System.out.print(" " + nei.getKey() + "(" + df2.format(g.getEdge(nei.getKey(),node.getKey())) + ")" + ",");
+            node_data nei = g.getNode(it.next().getDest());
+            if(g.hasEdge(node.getKey(),nei.getKey()))
+            {
+                System.out.print(" " + nei.getKey() + "(" + df2.format(g.getEdge(node.getKey(),nei.getKey()).getWeight()) + ")" + ",");
+            }
         }
     }
-
 }
