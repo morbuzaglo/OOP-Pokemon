@@ -13,8 +13,6 @@ public class NodeData implements node_data
 
     public NodeData(int key)
     {
-        // TODO is this constructor necessary?
-
         this.key = key;
         this.weight = 0;
         this.p = null;
@@ -72,7 +70,6 @@ public class NodeData implements node_data
     @Override
     public double getWeight()
     {
-        //TODO check what is the default weight.
         return this.weight;
     }
 

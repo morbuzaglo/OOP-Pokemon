@@ -2,7 +2,7 @@ package ex2;
 
 public class GeoLoc implements geo_location
 {
-	double x,y,z;
+	private double x,y,z;
 	
 	public GeoLoc()
 	{

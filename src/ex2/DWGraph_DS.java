@@ -3,7 +3,6 @@ package ex2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class DWGraph_DS implements directed_weighted_graph
 {
@@ -46,13 +45,20 @@ public class DWGraph_DS implements directed_weighted_graph
     @Override
     public void addNode(node_data n)
     {
-        //TODO is the NodeData class supposed to be inner or not?
-        if(!this._nodes.containsKey(n.getKey()))
+        try
         {
-            this._nodes.put(n.getKey(),n);
-            this._edges.put(n.getKey(), new HashMap<Integer, edge_data>());
-            mc++;
-            numOfNodes++;
+            if(!this._nodes.containsKey(n.getKey()))
+            {
+                this._nodes.put(n.getKey(),n);
+                this._edges.put(n.getKey(), new HashMap<Integer, edge_data>());
+                mc++;
+                numOfNodes++;
+            }
+        }
+        catch(Exception NullPointerException)
+        {
+            System.out.println("DWGraph_DS -> addNode: node_data n is null.");
+            return;
         }
     }
 
@@ -63,12 +69,14 @@ public class DWGraph_DS implements directed_weighted_graph
         {
             if(!((NodeData)(_nodes.get(src))).hasNei(dest)) // if NOT neighbors
             {
-                numOfEdges++;
+
                 ((NodeData)(_nodes.get(src))).addNei(_nodes.get(dest)); // ONLY adding to src (DIRECTED).
                 _edges.get(src).put(dest,new EdgeData(src,dest,w));
                 mc++;
+                numOfEdges++;
             }
-            else if(src != dest && w != _edges.get(src).get(dest).getWeight()) // if already neighbors, but 'w' needs to change AND if they are both not the same key.
+            else if(src == dest) throw new Exception();
+            else if(w != _edges.get(src).get(dest).getWeight()) // if already neighbors, but 'w' needs to change AND if they are both not the same key.
             {
                 _edges.get(src).put(dest, new EdgeData(src, dest, w));
                 mc++;
@@ -78,7 +86,7 @@ public class DWGraph_DS implements directed_weighted_graph
         }
         catch (Exception e) // if at least one node does not exist in this graph.
         {
-            e.printStackTrace();
+            System.out.println("DWGraph_DS -> connect: at least one of the nodes not in graph, or src == dest.");
             return;
         }
     }
@@ -98,43 +106,43 @@ public class DWGraph_DS implements directed_weighted_graph
     @Override
     public node_data removeNode(int key)
     {
-        try
+        if(this.getNode(key) == null) return null; // DO NOTHING, the key is already not in the graph.
+        ArrayList<node_data> nodes = new ArrayList<>();
+        ArrayList<edge_data> edges = new ArrayList<>();
+
+        for(node_data nTemp : this.getV())
         {
-            NodeData node = (NodeData) _nodes.get(key);
-            Collection<node_data> List = node.getNeis().values();
-            ArrayList<node_data> arrList = new ArrayList<node_data>();
+            nodes.add(new NodeData(nTemp));
 
-            Iterator<node_data> it = List.iterator();
-            while (it.hasNext())     // copy all it's neighbors to a temp ArrayList,
-            {					     // because we can't iterate and remove at the same time.
-                node_data nei = it.next();
-                arrList.add(nei);
-            }
-
-            int keyNei;
-            int size = List.size();
-            for (int j = 0; j < size; j++)
+            for(edge_data eTemp : this.getE(nTemp.getKey()))
             {
-                keyNei = arrList.get(j).getKey();
-                if (keyNei != key) // if they keys are same -> DO NOT DELETE EDGE! (the node most still have itself as a neighbor).
+                edges.add(new EdgeData(eTemp));
+            }
+        }
+
+        NodeData node = (NodeData)_nodes.get(key);
+
+        for(node_data nTemp : nodes) // looking all the nodes for connection to the key's node.
+        {
+            for(edge_data eTemp : edges)
+            {
+                if(eTemp.getDest() == node.getKey())
                 {
-                    this.removeEdge(key, keyNei);  // remove BOTH SIDES of connection between the nodes.
-                    this.removeEdge(keyNei, key);
+                    removeEdge(nTemp.getKey(), node.getKey());
+                }
+                if(eTemp.getSrc() == node.getKey())
+                {
+                    removeEdge(eTemp.getSrc(),  eTemp.getDest());
                 }
             }
-
-            mc++;
-            this.numOfNodes--;
-            this._nodes.remove(key, node); // remove the node from the graph's list of nodes.
-            this._edges.remove(key); // remove the node from the edges list.
-
-            return node;
         }
-        catch (Exception e) // if there's no node associated with that key
-        {
-            e.printStackTrace();
-            return null;
-        }
+
+        this._edges.remove(node.getKey());
+        this._nodes.remove(node.getKey()); // remove it from nodes list
+        mc++;
+        this.numOfNodes--;
+
+        return node;
     }
 
     @Override
@@ -142,7 +150,7 @@ public class DWGraph_DS implements directed_weighted_graph
     {
         try
         {
-            if(src == dest) return null; // DO NOTHING, because this edge cannot be removed.
+            if(src == dest) throw new Exception(); // CANNOT remove node from itself.
             else if(((NodeData) _nodes.get(src)).hasNei(dest)) // if they are connected.
             {
                 ((NodeData) _nodes.get(src)).getNeis().remove(dest); // remove ONLY this directed connection (edge from dest to src NOT REMOVED!).
@@ -158,7 +166,7 @@ public class DWGraph_DS implements directed_weighted_graph
         }
         catch (Exception e) // if at least one of the keys invalid (or not exist).
         {
-            e.printStackTrace();
+            System.out.println("DWGraph_DS -> removeEdge: at least one of the nodes not in graph, or src == dest.");
             return null;
         }
     }
@@ -178,8 +186,6 @@ public class DWGraph_DS implements directed_weighted_graph
     @Override
     public int getMC()
     {
-        // TODO make sure all the places mc++ should be.
         return this.mc;
     }
-
 }

@@ -8,51 +8,58 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-public class DWGraph_Algo implements dw_graph_algorithms {
+public class DWGraph_Algo implements dw_graph_algorithms
+{
 	private directed_weighted_graph g= new DWGraph_DS();
+
 	public DWGraph_Algo()
 	{
-		g=new DWGraph_DS();
+		g = new DWGraph_DS();
 	}
 	
 	@Override
-	public void init(directed_weighted_graph g) {
-		this.g=g;
+	public void init(directed_weighted_graph g)
+	{
+		this.g = g;
 	}
 
 	@Override
-	public directed_weighted_graph getGraph() {
-		// TODO Auto-generated method stub
+	public directed_weighted_graph getGraph()
+	{
 		return g;
 	}
 
 	@Override
-	public directed_weighted_graph copy() {
+	public directed_weighted_graph copy()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public double shortestPathDist(int src, int dest) {
+	public double shortestPathDist(int src, int dest)
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public List<node_data> shortestPath(int src, int dest) {
+	public List<node_data> shortestPath(int src, int dest)
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean save(String file) {
+	public boolean save(String file)
+	{
 		
 	
 		
@@ -123,7 +130,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	}
 
 	@Override
-	public boolean load(String file) {
+	public boolean load(String file)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}

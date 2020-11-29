@@ -17,6 +17,15 @@ public class EdgeData implements edge_data
         this.tag = 0;
     }
 
+    public EdgeData(edge_data e)
+    {
+        this.src = e.getSrc();
+        this.dest = e.getDest();
+        this.weight = e.getWeight();
+        this.info = e.getInfo();
+        this.tag = e.getTag();
+    }
+
     @Override
     public int getSrc()
     {

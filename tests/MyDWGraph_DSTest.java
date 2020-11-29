@@ -151,38 +151,48 @@ class myDWGraph_DSTest
 
         createWGraph(n, 10*n);
 
-/*
-        for(int key : keys)
-        {
-            System.out.print(key + " ");
-        }
-        System.out.println();
-*/
 
-        g.removeNode(0);
-        // System.out.println(0 + "was removed.");
+//        for(int key : keys)
+//        {
+//            System.out.print(key + " "); // * PRINT LINE *
+//        }
+//        System.out.println(); // * PRINT LINE *
 
-        g.removeNode(5);
-        // System.out.println(5 + "was removed.");
+
+        NodeData n1 = (NodeData) g.removeNode(0);
+        assertEquals(1, n1.getNeis().size());
+
+         //System.out.println(0 + " was removed."); // * PRINT LINE *
+
+        NodeData n2 =  (NodeData) g.removeNode(5);
+        assertEquals(1, n2.getNeis().size());
+
+        //System.out.println(5 + " was removed."); // * PRINT LINE *
+
+        //System.out.print("Was remain: ");
+        //g.getV().forEach(el -> System.out.print(el.getKey() + ", ")); // * PRINT LINE *
 
         assertFalse(g.hasEdge(5,0));
         assertFalse(g.hasEdge(0,2));
         assertTrue(g.hasEdge(7,8));
         assertNull(g.getNode(5));
 
-        for(int key : keys)
+        int keySrc;
+        int keyDest;
+        for(node_data node : g.getV())
         {
-            if(g.getNode(key) != null)
+
+            for(edge_data edge : g.getE(node.getKey()))
             {
-                g.removeNode(key);
-                // System.out.println(key + "was removed.");
+                keySrc = edge.getSrc();
+                keyDest = edge.getDest();
+                assertNotEquals(0, keyDest);
+                assertNotEquals(0, keySrc);
+
+                assertNotEquals(5, keyDest);
+                assertNotEquals(5, keySrc);
             }
-
         }
-        keys.removeAll(keys);
-
-        g.getV().forEach(el -> System.out.println("\n" + el.getKey() + "was remain."));
-        assertEquals(0, g.getV().size());
 
     }
 
