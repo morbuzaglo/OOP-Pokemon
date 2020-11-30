@@ -123,13 +123,11 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return false;
 		}
 
-		// System.out.println(json_object.toString()); //printing the json object to check if its alright //TODO Delete.
 
 		try(FileWriter jsonfile = new FileWriter(file))
 		{
 			jsonfile.write(json_object.toString()); // opining a file writer to convert json object to string and add it to the file
 			jsonfile.close();
-			//TODO Delete .close() -> https://rules.sonarsource.com/java/RSPEC-4087
 		}
 		catch(IOException e)
 		{
