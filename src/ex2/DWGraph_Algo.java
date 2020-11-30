@@ -25,7 +25,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 	@Override
 	public void init(directed_weighted_graph g) // init graph DWGraph_ds
 	{
-		this.g=g;
+		this.g = g;
 	}
 
 	@Override
