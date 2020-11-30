@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -13,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class myDWGraph_DSTest
 {
-
     private static DWGraph_DS g;
     private static int n;
     private static ArrayList<Integer> keys;
