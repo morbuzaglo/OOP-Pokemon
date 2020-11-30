@@ -19,9 +19,9 @@ public class test {
 		g0.connect(0, 4, -1);
 		g0.connect(0, 5, 0);
 		graph.init(g0);
-		graph.save("j.json");
-		graph.load("j.json");
-		graph.save("j8.json");
+		//graph.save("j.json");
+		//graph.load("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\save and load files\\A0");
+		//graph.save("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\save and load files\\j10.json");
 
 		
 		
