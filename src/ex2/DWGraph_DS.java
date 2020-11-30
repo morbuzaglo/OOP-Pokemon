@@ -54,7 +54,6 @@ public class DWGraph_DS implements directed_weighted_graph
                 mc++;
                 numOfNodes++;
             }
-            //ok
         }
         catch(Exception NullPointerException)
         {
