@@ -92,4 +92,21 @@ public class GeoLoc implements geo_location
 	{
 		return Math.sqrt(Math.pow(g.x()-x, 2)+Math.pow(g.y()-y, 2)+Math.pow(g.z()-z, 2));
 	}
+	@Override
+	public boolean equals(Object n)
+	// equals method for geolocation
+	{
+		if(n==null)
+			return false;
+		if(n instanceof geo_location)
+		{
+			
+			if(((GeoLoc) n).x()==x&&((GeoLoc) n).y()==y&&((GeoLoc) n).z()==z)
+				return true;
+			else return false;
+		}
+		
+	return false;	
+	}
+	
 }

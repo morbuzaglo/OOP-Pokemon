@@ -102,4 +102,21 @@ public class NodeData implements node_data
     {
         this.tag = t;
     }
+    @Override
+	public boolean equals(Object n)
+	//TODO complete this method with neighbors 
+	//equals method for nodedata
+	{
+		if(n==null)
+			return false;
+		if(n instanceof node_data)
+		{
+			if(((NodeData)n).getKey()==key&&((NodeData)n).getInfo().equals(info)&&((NodeData)n).getTag()==tag&&((NodeData)n).getWeight()==weight&&((NodeData)n).getLocation().equals(p))
+				return true;
+			else return false;
+		}
+		
+	return false;	
+	}
+    
 }
