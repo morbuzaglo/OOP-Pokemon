@@ -2,7 +2,6 @@ import ex2.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,11 +28,10 @@ class myDWGraph_DSTest
         rand = new Random(1);
 
         //createWGraph(n,n/2);
-
     }
 
     @Test
-    public void runTimeTest()
+    void runTimeTest()
     {
         long start = System.currentTimeMillis();
 
@@ -48,7 +46,7 @@ class myDWGraph_DSTest
     }
 
     @Test
-    public void addNode()
+    void addNode()
     {
         createWGraph(10,10);
 

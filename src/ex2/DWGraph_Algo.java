@@ -3,8 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 import org.json.JSONArray;
@@ -15,17 +14,21 @@ import org.json.JSONTokener;
 
 public class DWGraph_Algo implements dw_graph_algorithms
 {
-	private directed_weighted_graph g = new DWGraph_DS();
+	private directed_weighted_graph g;
+	private HashMap<Integer, Double> t;
+	private HashMap<Integer, ArrayList<node_data>> _paths;
 
-	public DWGraph_Algo() // Default contructor
+	public DWGraph_Algo() // Default constructor
 	{
-		g = new DWGraph_DS();
+		this.g = new DWGraph_DS();
+		this.t = new HashMap<Integer, Double>();
 	}
 
 	@Override
 	public void init(directed_weighted_graph g) // init graph DWGraph_ds
 	{
 		this.g = g;
+		this.t = new HashMap<Integer, Double>();
 	}
 
 	@Override
@@ -123,11 +126,10 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return false;
 		}
 
-
-		try(FileWriter jsonfile = new FileWriter(file))
+		try(FileWriter jsonFile = new FileWriter(file))
 		{
-			jsonfile.write(json_object.toString()); // opining a file writer to convert json object to string and add it to the file
-			jsonfile.close();
+			jsonFile.write(json_object.toString()); // opining a file writer to convert json object to string and add it to the file
+			jsonFile.close();
 		}
 		catch(IOException e)
 		{
@@ -170,7 +172,6 @@ public class DWGraph_Algo implements dw_graph_algorithms
 					N.setLocation(p);
 					g_copy.addNode(N);
 				}
-
 				for(int i=0;i<edgesList.length();i++) // going over edge list and connecting existing nodes to together
 				{
 					g_copy.connect(edgesList.getJSONObject(i).getInt("src"), edgesList.getJSONObject(i).getInt("dest"), edgesList.getJSONObject(i).getDouble("w"));
@@ -178,7 +179,6 @@ public class DWGraph_Algo implements dw_graph_algorithms
 				}
 
 				init(g_copy); // init graph to be the new graph
-
 				file_.close(); //closing file
 			} 
 			catch (FileNotFoundException e2)
@@ -193,6 +193,113 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return false;
 		}
 		return true;
+	}
+
+	/* ************************************************************************************** */
+
+
+	private void Dijkstra(int s, int d, int choose)
+	// "choose" parameter: 0 -> connectivity/double path, 1 -> node_info List path.
+	{
+		try
+		{
+			if(g.getNode(s) != null && g.getNode(d) != null) // if one of the nodes does not exist.
+			{
+				LinkedList<Integer> queue = new LinkedList<Integer>();
+
+				if (choose == 0)  // if we call Dijkstra for checking connectivity/ double path distance.
+				{
+					g.getV().forEach(n -> this.t.put(n.getKey(), -1.0)); // default tag.
+
+					queue.add(s);
+					this.t.put(s, 0.0); // distance from the source == 0 (it is the source).
+
+					double t1;
+					double t2;
+					while (!queue.isEmpty())
+					{
+						s = queue.poll();
+
+						Iterator<node_data> i = ((NodeData)(g.getNode(s))).getNeis().values().iterator();
+						while (i.hasNext())
+						{
+							int k = i.next().getKey();
+
+							t1 = this.t.get(s);
+							t2 = this.t.get(g.getEdge(s, k));
+
+							if (this.t.get(k) == -1.0)  // haven't been visited
+							{
+								this.t.put(k,t1 + t2);
+								queue.add(k);
+							}
+							else
+							{
+								if (this.t.get(k) > t1 +t2)
+								{
+									this.t.put(k, t1 + t2);
+									queue.add(k);
+								}
+							}
+						}
+					}
+				}
+				else  // is call from List<node_info> ShortestPath:
+				{
+					g.getV().forEach(n -> this.t.put(n.getKey(), -1.0)); //  Initialization:
+					_paths.clear();
+					for (node_data node : g.getV())
+					{
+						_paths.put(node.getKey(), new ArrayList<node_data>());
+					}
+
+					queue.add(s);
+					_paths.get(s).add(g.getNode(s));
+					this.t.put(s, 0.0); // distance from the source == 0. (it is the source).
+
+					double t1;
+					double t2;
+					while (!queue.isEmpty())
+					{
+						s = queue.poll();
+
+						Iterator<node_data> i = ((NodeData)(g.getNode(s))).getNeis().values().iterator();
+						while (i.hasNext())
+						{
+							int k = i.next().getKey();
+
+							t1 = this.t.get(s);
+							t2 = this.t.get(g.getEdge(s, k));
+							if (g.getNode(k).getTag() == -1.0)  // haven't been visited
+							{
+								_paths.get(k).addAll(_paths.get(s));  // add the ist of nodes that is the fastest way (till now).
+								_paths.get(k).add(g.getNode(k));
+								this.t.put(k, t1 +t2); //adding +1 to the way from the source.
+								queue.add(k);
+							}
+							else
+							{
+								if (this.t.get(k) > t1 + t2)   // if the other way has shortest path -> put it instead.
+								{
+									this.t.put(k, t1 + t2);
+									_paths.get(k).removeAll(_paths.get(k));
+									_paths.get(k).addAll(_paths.get(s));
+									_paths.get(k).add(g.getNode(k));
+									queue.add(k);
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+				return;
+
+		}
+		catch (Exception e)
+		{
+			System.out.println(e + ", Problem: Graph_Algo -> private: Dijkstra");
+		}
 	}
 }
 
