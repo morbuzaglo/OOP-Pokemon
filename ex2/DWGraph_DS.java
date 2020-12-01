@@ -19,7 +19,7 @@ public class DWGraph_DS implements directed_weighted_graph
         this.numOfEdges = 0;
         this.numOfNodes = 0;
         this._nodes = new HashMap<Integer, node_data>();
-        this._edges = new HashMap<Integer, HashMap<Integer, edge_data>>();
+        this._edges = new HashMap<Integer,  HashMap<Integer, edge_data>>();
     }
 
     public boolean hasEdge(int src, int dest)
@@ -41,6 +41,11 @@ public class DWGraph_DS implements directed_weighted_graph
             return _edges.get(src).get(dest);
         }
         else return null;
+    }
+    public HashMap<Integer, HashMap<Integer, edge_data>> getALLEdges()
+    { 
+            return _edges;
+      
     }
 
     @Override
@@ -70,6 +75,9 @@ public class DWGraph_DS implements directed_weighted_graph
         {
             if(!((NodeData)(_nodes.get(src))).hasNei(dest)) // if NOT neighbors
             {
+            	
+
+
 
                 ((NodeData)(_nodes.get(src))).addNei(_nodes.get(dest)); // ONLY adding to src (DIRECTED).
                 _edges.get(src).put(dest,new EdgeData(src,dest,w));
@@ -192,8 +200,8 @@ public class DWGraph_DS implements directed_weighted_graph
     public void copy(directed_weighted_graph g)
 	//copies graph and connections
 	{
-		// if graph is not not and not empty
-		if(g.edgeSize()!=0&&g!=null)
+		// if graph is not empty
+		if(g.nodeSize()!=0&&g!=null)
 		{
 			//gets a colllection of all nodes in graph
 			Collection<node_data> temp=g.getV();
@@ -204,15 +212,18 @@ public class DWGraph_DS implements directed_weighted_graph
 				node_data temp2= iterator.next();
 				//create a new node with the same key and all traits
 				node_data newnode=new NodeData(temp2);
+
 				// add the node to the node hashmap if only its key doesnt exist
 				if(!_nodes.containsKey(newnode.getKey()))
 				{
+
 					_nodes.put(newnode.getKey(), newnode);
+					numOfNodes++;
+					mc++;
 				}
 				// config neighbor nodes iterator and also hashmap for edges for the same father node
 				Iterator<node_data> neighbors_nodes = ((NodeData)temp2).getNeis().values().iterator();
-				HashMap<Integer, edge_data> neighbors_edges = _edges.get(((NodeData)temp2).getKey());
-
+				HashMap<Integer, edge_data> neighbors_edges = ((DWGraph_DS)g).getALLEdges().get(temp2.getKey());
 				while(neighbors_nodes.hasNext())
 				{
 					node_data temp3= neighbors_nodes.next();
@@ -222,19 +233,29 @@ public class DWGraph_DS implements directed_weighted_graph
 					if(!_nodes.containsKey(newnode2.getKey()))
 					{
 						_nodes.put(newnode2.getKey(), newnode2);
+						numOfNodes++;
+						mc++;
 					}
 					// connects between both nodes with a edge ( connect checks if both nodes are neighbors
 					// or not and acts accordingly
-					connect(newnode2.getKey(),newnode.getKey(),neighbors_edges.get(temp3.getKey()).getWeight());
+					if(temp2.getKey()!=temp3.getKey())
+					{
+						if(_edges.get(newnode.getKey())==null)
+						_edges.put(newnode.getKey(),new HashMap<Integer, edge_data> ());
+					connect(newnode.getKey(),newnode2.getKey(),neighbors_edges.get(newnode2.getKey()).getWeight());
+					
+
+
+					}
+
 				}	
 			}
-           //update traits of graph
-			numOfNodes=g.nodeSize();
-			numOfEdges=g.edgeSize();
-			mc=g.getMC();
+		
 		}
+
+		
 		// if graph not null and empty it clears everything in all hashmaps and updates traits
-		else if(g!=null)
+		else if(g!=null&&g.nodeSize()==0)
 		{
 		_nodes.clear();
 		_edges.clear();
@@ -242,6 +263,7 @@ public class DWGraph_DS implements directed_weighted_graph
 		numOfEdges=g.edgeSize();
 		mc=g.getMC();
 		}
+		//System.out.println(numOfEdges);
 
 	}
 }
