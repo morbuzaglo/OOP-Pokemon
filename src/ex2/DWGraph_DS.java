@@ -3,6 +3,7 @@ package ex2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class DWGraph_DS implements directed_weighted_graph
 {
@@ -188,4 +189,59 @@ public class DWGraph_DS implements directed_weighted_graph
     {
         return this.mc;
     }
+    public void copy(directed_weighted_graph g)
+	//copies graph and connections
+	{
+		// if graph is not not and not empty
+		if(g.edgeSize()!=0&&g!=null)
+		{
+			//gets a colllection of all nodes in graph
+			Collection<node_data> temp=g.getV();
+			Iterator<node_data> iterator = temp.iterator();
+
+			while(iterator.hasNext()) 
+			{
+				node_data temp2= iterator.next();
+				//create a new node with the same key and all traits
+				node_data newnode=new NodeData(temp2);
+				// add the node to the node hashmap if only its key doesnt exist
+				if(!_nodes.containsKey(newnode.getKey()))
+				{
+					_nodes.put(newnode.getKey(), newnode);
+				}
+				// config neighbor nodes iterator and also hashmap for edges for the same father node
+				Iterator<node_data> neighbors_nodes = ((NodeData)temp2).getNeis().values().iterator();
+				HashMap<Integer, edge_data> neighbors_edges = _edges.get(((NodeData)temp2).getKey());
+
+				while(neighbors_nodes.hasNext())
+				{
+					node_data temp3= neighbors_nodes.next();
+					node_data newnode2=new NodeData(temp3);
+					//goes through all neighboring nodes of the father node and adds to graph as
+					//key doesnt exist in the graph
+					if(!_nodes.containsKey(newnode2.getKey()))
+					{
+						_nodes.put(newnode2.getKey(), newnode2);
+					}
+					// connects between both nodes with a edge ( connect checks if both nodes are neighbors
+					// or not and acts accordingly
+					connect(newnode2.getKey(),newnode.getKey(),neighbors_edges.get(temp3.getKey()).getWeight());
+				}	
+			}
+           //update traits of graph
+			numOfNodes=g.nodeSize();
+			numOfEdges=g.edgeSize();
+			mc=g.getMC();
+		}
+		// if graph not null and empty it clears everything in all hashmaps and updates traits
+		else if(g!=null)
+		{
+		_nodes.clear();
+		_edges.clear();
+		numOfNodes=g.nodeSize();
+		numOfEdges=g.edgeSize();
+		mc=g.getMC();
+		}
+
+	}
 }
