@@ -1,3 +1,5 @@
+package tests;
+
 import ex2.*;
 
 import org.junit.jupiter.api.BeforeAll;
