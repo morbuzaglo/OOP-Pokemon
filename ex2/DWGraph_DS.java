@@ -266,4 +266,49 @@ public class DWGraph_DS implements directed_weighted_graph
 		//System.out.println(numOfEdges);
 
 	}
+    @Override
+	public boolean equals (Object copygraph)
+	//equals method implementaion
+	{
+		if(copygraph instanceof directed_weighted_graph)
+		{
+			if(numOfNodes!= ((directed_weighted_graph) copygraph).nodeSize()&&numOfEdges!=((directed_weighted_graph) copygraph).edgeSize())
+			{
+				return false;
+			}
+			Iterator<node_data> nodes = getV().iterator();
+			while(nodes.hasNext())
+			{
+				
+				node_data original=nodes.next();
+				node_data copy=((directed_weighted_graph) copygraph).getNode(original.getKey());
+				if(!original.equals(copy))
+				{
+					return false;
+				}
+				Iterator<node_data> neighbors_original = ((NodeData)original).getNeis().values().iterator();
+				
+
+				
+				
+				while(neighbors_original.hasNext())
+				{
+					node_data neighbors_original_node=neighbors_original.next();
+					node_data neighbors_copy_node=((directed_weighted_graph) copygraph).getNode(neighbors_original_node.getKey());
+					if(getEdge(original.getKey(),neighbors_original_node.getKey())!=((directed_weighted_graph) copygraph).getEdge(copy.getKey(), neighbors_copy_node.getKey()))
+					{
+						return false;
+					}
+					
+					
+				}
+				
+			}
+			
+			
+			
+		}
+			
+		return true;
+	}
 }
