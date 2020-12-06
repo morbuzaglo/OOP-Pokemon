@@ -88,20 +88,26 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			Iterator<node_data> it = g.getV().iterator();
 			while(it.hasNext() && is)
 			{
-				if(it.next().getTag() == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
+				if(t.get(it.next().getKey()) == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
 			}
 
 			if(is == false) return is;
 
+
 			node = g.getV().iterator().next(); // random node (just to check connectivity).
+
+			directed_weighted_graph gtemp = this.g;
+			this.g = copy_opposite();
+
 			Dijkstra(node.getKey(),node.getKey(), 0);  // 0 means => only checking connectivity or path distance (see in Dijkstra static method).
 
 			it = g.getV().iterator();
 			while(it.hasNext() && is)
 			{
-				if(it.next().getTag() == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
+				if(t.get(it.next().getKey()) == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
 			}
 
+			this.g = gtemp;
 			return is;
 		}
 	}
@@ -246,7 +252,9 @@ public class DWGraph_Algo implements dw_graph_algorithms
 		}
 		return true;
 	}
-	/* ************************************************************************************** */
+	/* ****************************** */
+
+
 	private void Dijkstra(int s, int d, int choose)
 	// "choose" parameter: 0 -> connectivity/double path, 1 -> node_info List path.
 	{
@@ -275,7 +283,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 							int k = i.next().getKey();
 
 							t1 = this.t.get(s);
-							t2 = this.t.get(g.getEdge(s, k));
+							t2 = g.getEdge(s, k).getWeight();
 
 							if (this.t.get(k) == -1.0)  // haven't been visited
 							{
@@ -318,8 +326,8 @@ public class DWGraph_Algo implements dw_graph_algorithms
 							int k = i.next().getKey();
 
 							t1 = this.t.get(s);
-							t2 = this.t.get(g.getEdge(s, k));
-							if (g.getNode(k).getTag() == -1.0)  // haven't been visited
+							t2 = g.getEdge(s, k).getWeight();
+							if (this.t.get(k) == -1.0)  // haven't been visited
 							{
 								_paths.get(k).addAll(_paths.get(s));  // add the ist of nodes that is the fastest way (till now).
 								_paths.get(k).add(g.getNode(k));
@@ -350,26 +358,43 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			System.out.println(e + ", Problem: Graph_Algo -> private: Dijkstra");
 		}
 	}
-	private HashMap<Integer, edge_data> switchEdges()
+
+	public directed_weighted_graph copy_opposite()  // deep-copy fo a graph.
 	{
-		HashMap<Integer, edge_data> temp = new HashMap<Integer, edge_data>();
-
-		for(node_data n : g.getV())
+		if(g == null) return null;
+		directed_weighted_graph newg = new DWGraph_DS();  // the new graph.
+		Iterator<node_data> it0 = this.g.getV().iterator();
+		while(it0.hasNext()) // copies all the nodes from the copied graph to the new one.
 		{
-			Iterator it = g.getE(n.getKey()).iterator();
-
-			while(it.hasNext())
-			{
-				edge_data e = (EdgeData)it.next();
-				//temp.put(e.getDest(),t);
-			}
+			node_data n = it0.next();
+			int k = n.getKey();
+			newg.addNode(new NodeData(n));
+			newg.getNode(k).setInfo(g.getNode(k).getInfo());  // copies the nodes info as well.
 		}
 
-		return temp;
+		Iterator<node_data> it1 = this.g.getV().iterator();
+		int keyNei;
+		int keyNode;
+		edge_data w =new EdgeData(0,0,0);
+
+		while(it1.hasNext())  // connect the nodes of the new graph, the same way the copied one is.
+		{
+			keyNode = it1.next().getKey();
+			NodeData N=(NodeData)(g.getNode(keyNode));
+			Iterator<node_data> it2 = (N.getNeis().values().iterator());
+			while(it2.hasNext())  // checking all nodes for connection.
+			{
+				keyNei = it2.next().getKey();
+				w = g.getEdge(keyNode, keyNei);
+				newg.connect(keyNei, keyNode, w.getWeight());
+			}
+		}
+		return newg;
 	}
+}
 
 	
-}
+
 
 
 

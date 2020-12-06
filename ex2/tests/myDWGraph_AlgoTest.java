@@ -48,7 +48,7 @@ class myDWGraph_AlgoTest
 
         ga.init(g);
 
-//        System.out.println("**** ORIGINAL GRAPH ****");
+//        System.out.println("** ORIGINAL GRAPH **");
 //        printV(g);
 //        System.out.println();
 
@@ -60,7 +60,7 @@ class myDWGraph_AlgoTest
         gr.removeNode(0);
         assertNotEquals(gr,g);
 
-//        System.out.println("\n**** COPIED GRAPH ****");
+//        System.out.println("\n** COPIED GRAPH **");
 //        printV((WGraph_DS)gr);
 
     }
@@ -68,24 +68,35 @@ class myDWGraph_AlgoTest
     @Test
     void isConnected()
     {
-        createWGraph(n,0);
+        createWGraph(5,0);
 
-        for(int i =0; i< n-1; i++)
-        {
-            g.connect(i,i+1,(double)i);
-        }
+//        for(int i =0; i< n-1; i++)
+//        {
+//            g.connect(i,i+1,(double)(i+1));
+//            g.connect(i+1, i, (double)(i+1));
+//        }
+
+        g.connect(1,0,5.0);
+        g.connect(0,4,5.0);
+        g.connect(4,3,5.0);
+        g.connect(3,2,5.0);
+        g.connect(3,1,5.0);
+        g.connect(2,4,5.0);
+        g.connect(2,1,5.0);
+        g.connect(1,2,5.0);
+
 
         ga.init(g);
         assertTrue(ga.isConnected());
 
-        // printV(g);
+        //printV(g);
 
-        g.removeNode(n/2);
+        g.removeNode(4);
         ga.init(g); // required?
         assertFalse(ga.isConnected());
 
-        // System.out.println("\n");
-        // printV(g);
+        //System.out.println("\n");
+        //printV(g);
 
     }
 
@@ -186,7 +197,7 @@ class myDWGraph_AlgoTest
     }
 
 
-    /*  ************************   HELP FUNCTIONS *********************** */
+    /*  ********   HELP FUNCTIONS ********* */
 
 
     static void createWGraph(int numOfNones, int numOfCon)
