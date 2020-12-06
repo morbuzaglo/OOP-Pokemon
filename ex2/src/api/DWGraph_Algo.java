@@ -77,10 +77,10 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return newg;
 		}*/
 
-		//TODO check if its needed to return or just say g=newgraph
-		 DWGraph_DS newgraph=new  DWGraph_DS();
-		 newgraph.copy(g);
-		return newgraph;		
+		//TODO check if its needed to return or just say g=newg
+		 DWGraph_DS newg=new  DWGraph_DS();
+		 newg.copy(g);
+		return newg;
 	}
 
 	@Override
@@ -391,8 +391,8 @@ public class DWGraph_Algo implements dw_graph_algorithms
 		return temp;
 	}
 	 @Override
-		public boolean equals(Object n)
-		//equals method for nodedata
+	 public boolean equals(Object n)
+		//equals method for node_data
 		{
 			if(n==null)
 				return false;

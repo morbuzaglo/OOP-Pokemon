@@ -26,8 +26,6 @@ class myDWGraph_DSTest
         n = 10;
         keys = new ArrayList<Integer>();
         rand = new Random(1);
-
-        //createWGraph(n,n/2);
     }
 
     @Test
@@ -53,8 +51,6 @@ class myDWGraph_DSTest
         int t = (int) g.getV().stream().count();
 
         assertEquals(t, g.nodeSize());
-
-
     }
 
     @Test
@@ -62,20 +58,14 @@ class myDWGraph_DSTest
     {
         createWGraph(n,10*n);
 
-        for(int i = 0; i < n; i++)
-        {
-            node_data node = g.getNode(i);
-            assertNotEquals(null, node);
-        }
-        node_data node = g.getNode(n+1);  // no such key
-        assertNull(node);
+        g.addNode(new NodeData(99));
 
+        assertNotNull(g.getNode(99));
     }
 
     @Test
     void connect()
     {
-
         createWGraph(n,0);
 
         g.connect(0,1, 2.77);
@@ -116,8 +106,6 @@ class myDWGraph_DSTest
 
         g.removeEdge(0,1);
         assertFalse(g.hasEdge(0,1));
-
-
     }
 
 
@@ -136,17 +124,14 @@ class myDWGraph_DSTest
     {
         createWGraph(n, (int)(1.5*n));
         int key = keys.get(rand.nextInt(g.nodeSize()));
-        System.out.println("NODE_ID:   NEIGHBORS:");
-        printV(g.getNode(key));
-
+        //System.out.println("NODE_ID:   NEIGHBORS:");
+        //printV(g.getNode(key));
     }
 
     @Test
     void removeNode()
     {
-
         createWGraph(n, 10*n);
-
 
 //        for(int key : keys)
 //        {
@@ -156,12 +141,12 @@ class myDWGraph_DSTest
 
 
         NodeData n1 = (NodeData) g.removeNode(0);
-        assertEquals(1, n1.getNeis().size());
+        assertEquals(0, n1.getNeis().size());
 
          //System.out.println(0 + " was removed."); // * PRINT LINE *
 
         NodeData n2 =  (NodeData) g.removeNode(5);
-        assertEquals(1, n2.getNeis().size());
+        assertEquals(0, n2.getNeis().size());
 
         //System.out.println(5 + " was removed."); // * PRINT LINE *
 
@@ -197,6 +182,8 @@ class myDWGraph_DSTest
     {
         createWGraph(n,10*n);
 
+        g.connect(1,0,5.0);
+
         g.removeEdge(0, 1);
         // System.out.println(0 + "<->" + 1 + " was removed.");
 
@@ -205,6 +192,7 @@ class myDWGraph_DSTest
 
         assertFalse(g.hasEdge(0,6));
         assertFalse(g.hasEdge(0,1));
+        assertTrue(g.hasEdge(1,0));
 
         ArrayList<Integer> neiKeys = new ArrayList<Integer>();
 

@@ -31,8 +31,6 @@ class myDWGraph_AlgoTest
         keys = new ArrayList<Integer>();
         rand = new Random(1);
 
-        //createWGraph(n,n/2);
-
     }
 
     @Test
@@ -45,6 +43,9 @@ class myDWGraph_AlgoTest
         g.getNode(9).setInfo("Beer-Sheva");
         g.getNode(5).setInfo("Ariel");
 
+        g.getNode(0).setWeight(50.0);
+        g.getNode(0).setLocation(new GeoLoc(2.0,3.0,0.0));
+
         ga.init(g);
 
 //        System.out.println("**** ORIGINAL GRAPH ****");
@@ -53,6 +54,11 @@ class myDWGraph_AlgoTest
 
         directed_weighted_graph gr = new DWGraph_DS();
         gr = ga.copy();
+
+        assertEquals(gr,g);
+
+        gr.removeNode(0);
+        assertNotEquals(gr,g);
 
 //        System.out.println("\n**** COPIED GRAPH ****");
 //        printV((WGraph_DS)gr);

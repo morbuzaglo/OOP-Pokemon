@@ -42,10 +42,10 @@ public class DWGraph_DS implements directed_weighted_graph
         }
         else return null;
     }
+
     public HashMap<Integer, HashMap<Integer, edge_data>> getALLEdges()
     { 
-            return _edges;
-      
+        return _edges;
     }
 
     @Override
@@ -73,18 +73,14 @@ public class DWGraph_DS implements directed_weighted_graph
     {
         try
         {
-            if(!((NodeData)(_nodes.get(src))).hasNei(dest)) // if NOT neighbors
+            if(src == dest) throw new Exception();
+            else if(!((NodeData)(_nodes.get(src))).hasNei(dest)) // if NOT neighbors
             {
-            	
-
-
-
                 ((NodeData)(_nodes.get(src))).addNei(_nodes.get(dest)); // ONLY adding to src (DIRECTED).
                 _edges.get(src).put(dest,new EdgeData(src,dest,w));
                 mc++;
                 numOfEdges++;
             }
-            else if(src == dest) throw new Exception();
             else if(w != _edges.get(src).get(dest).getWeight()) // if already neighbors, but 'w' needs to change AND if they are both not the same key.
             {
                 _edges.get(src).put(dest, new EdgeData(src, dest, w));
@@ -197,6 +193,7 @@ public class DWGraph_DS implements directed_weighted_graph
     {
         return this.mc;
     }
+
     public void copy(directed_weighted_graph g)
 	//copies graph and connections
 	{
@@ -266,13 +263,14 @@ public class DWGraph_DS implements directed_weighted_graph
 		//System.out.println(numOfEdges);
 
 	}
+
     @Override
-	public boolean equals (Object copygraph)
-	//equals method implementaion
+	public boolean equals (Object copyGraph)
+	//equals method implementation
 	{
-		if(copygraph instanceof directed_weighted_graph)
+		if(copyGraph instanceof directed_weighted_graph)
 		{
-			if(numOfNodes!= ((directed_weighted_graph) copygraph).nodeSize()&&numOfEdges!=((directed_weighted_graph) copygraph).edgeSize())
+			if(numOfNodes!= ((directed_weighted_graph) copyGraph).nodeSize()&&numOfEdges!=((directed_weighted_graph) copyGraph).edgeSize())
 			{
 				return false;
 			}
@@ -281,32 +279,23 @@ public class DWGraph_DS implements directed_weighted_graph
 			{
 				
 				node_data original=nodes.next();
-				node_data copy=((directed_weighted_graph) copygraph).getNode(original.getKey());
+				node_data copy=((directed_weighted_graph) copyGraph).getNode(original.getKey());
 				if(!original.equals(copy))
 				{
 					return false;
 				}
 				Iterator<node_data> neighbors_original = ((NodeData)original).getNeis().values().iterator();
 				
-
-				
-				
 				while(neighbors_original.hasNext())
 				{
 					node_data neighbors_original_node=neighbors_original.next();
-					node_data neighbors_copy_node=((directed_weighted_graph) copygraph).getNode(neighbors_original_node.getKey());
-					if(getEdge(original.getKey(),neighbors_original_node.getKey()).equals(((directed_weighted_graph) copygraph).getEdge(copy.getKey(), neighbors_copy_node.getKey())))
+					node_data neighbors_copy_node=((directed_weighted_graph) copyGraph).getNode(neighbors_original_node.getKey());
+					if(!getEdge(original.getKey(),neighbors_original_node.getKey()).equals(((directed_weighted_graph) copyGraph).getEdge(copy.getKey(), neighbors_copy_node.getKey())))
 					{
 						return false;
 					}
-					
-					
 				}
-				
 			}
-			
-			
-			
 		}
 			
 		return true;
