@@ -67,4 +67,20 @@ public class EdgeData implements edge_data
     {
         this.tag = t;
     }
+    @Override
+   	public boolean equals(Object n)
+   	//TODO complete this method with neighbors 
+   	//equals method for Edgedata
+   	{
+   		if(n==null)
+   			return false;
+   		if(n instanceof edge_data)
+   		{
+   			if(((EdgeData)n).getSrc()==src&&((EdgeData)n).getDest()==dest&&((EdgeData)n).getWeight()==weight)
+   				return true;
+   			else return false;
+   		}
+   		
+   	return false;	
+   	}
 }
