@@ -18,71 +18,57 @@ public class DWGraph_Algo implements dw_graph_algorithms
 	private directed_weighted_graph g;
 	private HashMap<Integer, Double> t;
 	private HashMap<Integer, ArrayList<node_data>> _paths;
-
 	public DWGraph_Algo() // Default constructor
 	{
 		this.g = new DWGraph_DS();
 		this.t = new HashMap<Integer, Double>();
 	}
-
 	@Override
 	public void init(directed_weighted_graph g) // init graph DWGraph_ds
 	{
 		this.g = g;
 		this.t = new HashMap<Integer, Double>();
 	}
-
 	@Override
 	public directed_weighted_graph getGraph()
 	{
 		return g;
 	}
-
 	@Override
-	public directed_weighted_graph copy()
+	public directed_weighted_graph copy()  // deep-copy fo a graph.
 	{
-		/*
-		@Override
-		public weighted_graph copy()  // deep-copy fo a graph.
-		{
 			if(g == null) return null;
-			weighted_graph newg = new WGraph_DS();  // the new graph.
-
-			Iterator<node_info> it0 = this.g.getV().iterator();
+			directed_weighted_graph newg = new DWGraph_DS();  // the new graph.
+		Iterator<node_data> it0 = this.g.getV().iterator();
 			while(it0.hasNext()) // copies all the nodes from the copied graph to the new one.
 			{
-				node_info n = it0.next();
+				node_data n = it0.next();
 				int k = n.getKey();
-				newg.addNode(k);
+				newg.addNode(new NodeData(n));
 				newg.getNode(k).setInfo(g.getNode(k).getInfo());  // copies the nodes info as well.
 			}
 
-			Iterator<node_info> it1 = this.g.getV().iterator();
+			Iterator<node_data> it1 = this.g.getV().iterator();
 			int keyNei;
 			int keyNode;
-			double w;
+			edge_data w =new EdgeData(0,0,0);
 			while(it1.hasNext())  // connect the nodes of the new graph, the same way the copied one is.
 			{
 				keyNode = it1.next().getKey();
-
-				Iterator<node_info> it2 = g.getV(keyNode).iterator();
+				NodeData N=(NodeData)(g.getNode(keyNode));
+				Iterator<node_data> it2 = (N.getNeis().values().iterator());
 				while(it2.hasNext())  // checking all nodes for connection.
 				{
 					keyNei = it2.next().getKey();
+
 					w = g.getEdge(keyNode, keyNei);
 
-					newg.connect(keyNode, keyNei, w);
+
+					newg.connect(keyNode, keyNei, w.getWeight());
 				}
 			}
 			return newg;
-		}*/
-
-		//TODO check if its needed to return or just say g=newg
-		 DWGraph_DS newg=new  DWGraph_DS();
-		 newg.copy(g);
-		return newg;
-	}
-
+		}
 	@Override
 	public boolean isConnected()
 	{
@@ -119,20 +105,16 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return is;
 		}
 	}
-
-
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		// TODO implement shortestPathDist().
 		return 0;
 	}
-
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		// TODO implement shortestPath().
 		return null;
 	}
-
 	@Override
 	public boolean save(String file) // save file using JSON format
 	{
@@ -209,7 +191,6 @@ public class DWGraph_Algo implements dw_graph_algorithms
 		}
 		return true;
 	}
-
 	@Override
 	public boolean load(String file)
 	{
@@ -265,10 +246,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 		}
 		return true;
 	}
-
 	/* ************************************************************************************** */
-
-
 	private void Dijkstra(int s, int d, int choose)
 	// "choose" parameter: 0 -> connectivity/double path, 1 -> node_info List path.
 	{
@@ -372,7 +350,6 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			System.out.println(e + ", Problem: Graph_Algo -> private: Dijkstra");
 		}
 	}
-
 	private HashMap<Integer, edge_data> switchEdges()
 	{
 		HashMap<Integer, edge_data> temp = new HashMap<Integer, edge_data>();
@@ -390,21 +367,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 
 		return temp;
 	}
-	 @Override
-	 public boolean equals(Object n)
-		//equals method for node_data
-		{
-			if(n==null)
-				return false;
-			if(n instanceof dw_graph_algorithms)
-			{
-				if(((dw_graph_algorithms) n).getGraph().equals(g))
-					return true;
-				else return false;
-			}
-			
-		return false;	
-		}
+
 	
 }
 

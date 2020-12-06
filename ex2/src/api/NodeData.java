@@ -15,7 +15,7 @@ public class NodeData implements node_data
     {
         this.key = key;
         this.weight = 0;
-        this.p = null;
+        this.p = new GeoLoc();
         this.info = "";
         this.tag = 0;
         this.Neighbors = new HashMap<Integer, node_data>(); // only the neighbors that this directed to.
@@ -26,7 +26,7 @@ public class NodeData implements node_data
     {
         this.key = n.getKey();
         this.weight = n.getWeight();
-        this.p = n.getLocation();
+        this.p = new GeoLoc(n.getLocation());
         this.info = n.getInfo();
         this.tag = n.getTag();
         this.Neighbors = new HashMap<Integer, node_data>(); // only the neighbors that this directed to.

@@ -14,7 +14,9 @@ public class shady_checker {
 		original_graph.connect(0, 1, 1);
 		original_graph.connect(0, 2, 9);
 		original_graph.connect(1, 0, 1);
-		
+		//System.out.println(original_graph.edgeSize());
+
+
 
 		dw_graph_algorithms original_algo=new DWGraph_Algo();
 		original_algo.init(original_graph);
@@ -24,8 +26,12 @@ public class shady_checker {
 		copy_graph=original_algo.copy();
 		//System.out.println(((DWGraph_DS)copy_graph).nodeSize());
 		copy_algo.init(copy_graph);
+		//System.out.println(copy_graph.edgeSize());
+		//copy_graph.connect(0,1,1);
+		//System.out.println(copy_graph.getMC());
+
 		copy_algo.save("copy.json");
-		System.out.println(original_algo.equals(original_algo.copy()));
+		System.out.println(original_graph.equals(copy_graph));
 
 
 		
