@@ -1,4 +1,4 @@
-package ex2;
+package api;
 
 public class EdgeData implements edge_data
 {

@@ -1,4 +1,5 @@
-package ex2;
+package api;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -383,7 +384,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			while(it.hasNext())
 			{
 				edge_data e = (EdgeData)it.next();
-				temp.put(e.getDest(),t);
+				//temp.put(e.getDest(),t);
 			}
 		}
 

@@ -1,4 +1,4 @@
-package ex2;
+import api.*;
 
 public class shady_checker {
 
