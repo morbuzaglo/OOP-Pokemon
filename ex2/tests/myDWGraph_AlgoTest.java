@@ -103,64 +103,46 @@ class myDWGraph_AlgoTest
     @Test
     void shortestPathDist()
     {
-        createWGraph(n,0);
+        createWGraph(5,0);
 
-        for (int i = 0; i < 15; i++)
-        {
-            g.addNode(new NodeData(i));
-        }
-
-        g.removeNode(0);
-
-        g.connect(1,7,5.0);
-        g.connect(2,4,6.0);
-        g.connect(4,5,1.0);
-        g.connect(5,8,1.0);
-        g.connect(8,9,20.0);
-        g.connect(7,9,5.0);
-        g.connect(4,7,1.0);
-        g.connect(1,3,1.0);
-        g.connect(3,6,2.0);
-        g.connect(6,10,1.0);
-        g.connect(7,10,1.0);
+        g.connect(0,2,2.5);
+        g.connect(2,1,1.0);
+        g.connect(3,1,10.0);
+        g.connect(3,4,5.0);
+        g.connect(4,0,1.0);
+        g.connect(1,4,3.0);
 
         ga.init(g);
 
-        assertTrue(ga.isConnected());
-        assertEquals(1.0, ga.shortestPathDist(1,3));
-        assertEquals(5.0, ga.shortestPathDist(1,7));
-        assertEquals(8.0, ga.shortestPathDist(1,8));
-        assertEquals(6.0, ga.shortestPathDist(9,4));
-        assertEquals(6.0, ga.shortestPathDist(9,4));
+
+        assertEquals(9.5, ga.shortestPathDist(3,1));
+        assertEquals(3.0, ga.shortestPathDist(1,4));
+        assertEquals(6.0, ga.shortestPathDist(3,0));
 
         g.addNode(new NodeData(16));
 
-        assertNull(ga.shortestPathDist(16,4));
-
+        assertEquals(-1.0, ga.shortestPathDist(16,4));
     }
 
     @Test
     void shortestPath()
     {
-        createWGraph(n,0);
-        g.addNode(new NodeData(10));
-        g.removeNode(0);
+        createWGraph(5,0);
 
-        g.connect(1,2,5.0);
-        g.connect(2,4,6.0);
-        g.connect(4,5,1.0);
-        g.connect(5,8,1.0);
-        g.connect(8,9,20.0);
-        g.connect(7,9,5.0);
-        g.connect(4,7,1.0);
-        g.connect(1,3,1.0);
-        g.connect(3,6,2.0);
-        g.connect(6,10,1.0);
-        g.connect(7,10,1.0);
+        g.connect(0,2,2.5);
+        g.connect(2,1,1.0);
+        g.connect(3,1,10.0);
+        g.connect(3,4,5.0);
+        g.connect(4,0,1.0);
+        g.connect(1,4,3.0);
 
         ga.init(g);
 
         List<node_data> path = new ArrayList<>();
+        path = ga.shortestPath(3,1); // 3 4 0 2 1
+        printPath(path);
+
+        ga.init(g);
 
         path = ga.shortestPath(1,1);
         //printPath(path);  // needs to be: 1

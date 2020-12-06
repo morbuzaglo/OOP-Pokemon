@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ex2/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ex2/tests" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="openjdk-15" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library name="JUnit5.4">

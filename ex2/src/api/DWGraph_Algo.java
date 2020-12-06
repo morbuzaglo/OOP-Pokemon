@@ -22,18 +22,23 @@ public class DWGraph_Algo implements dw_graph_algorithms
 	{
 		this.g = new DWGraph_DS();
 		this.t = new HashMap<Integer, Double>();
+		this._paths = new HashMap<>();
 	}
+
 	@Override
 	public void init(directed_weighted_graph g) // init graph DWGraph_ds
 	{
 		this.g = g;
 		this.t = new HashMap<Integer, Double>();
+		this._paths = new HashMap<>();
 	}
+
 	@Override
 	public directed_weighted_graph getGraph()
 	{
 		return g;
 	}
+
 	@Override
 	public directed_weighted_graph copy()  // deep-copy fo a graph.
 	{
@@ -69,6 +74,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			}
 			return newg;
 		}
+
 	@Override
 	public boolean isConnected()
 	{
@@ -111,16 +117,45 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			return is;
 		}
 	}
+
 	@Override
-	public double shortestPathDist(int src, int dest) {
-		// TODO implement shortestPathDist().
-		return 0;
+	public double shortestPathDist(int src, int dest)
+	{
+		if(g.getNode(src) == null || g.getNode(dest) == null ) return -1.0; // if the there aren't such nodes in graph
+		else if(src == dest) return 0.0; // if they're the same node.
+		else
+		{
+			Dijkstra(src, dest, 0);  // 0 means => only looking for distance(double) or checking connectivity.
+			double tag = this.t.get(dest);
+
+			return tag;
+		}
 	}
 	@Override
-	public List<node_data> shortestPath(int src, int dest) {
-		// TODO implement shortestPath().
-		return null;
+	public List<node_data> shortestPath(int src, int dest)
+	{
+		if(g.getNode(src) == null || g.getNode(dest) == null)
+			return null; // if the there aren't such nodes in graph
+		else
+		{
+			List<node_data> path = new ArrayList<node_data>();
+
+			if (src == dest) // if they're the same node.
+			{
+				path.add(g.getNode(src));
+				return path;
+			}
+
+			Dijkstra(src, dest, 1); // 1 means -> for searching an actual node_info path, for a List<node_info>.
+
+			double tag = this.t.get(dest);
+			if (tag == -1.0) return null;
+
+			path = _paths.get(dest);
+			return path;
+		}
 	}
+
 	@Override
 	public boolean save(String file) // save file using JSON format
 	{
@@ -305,6 +340,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 				{
 					g.getV().forEach(n -> this.t.put(n.getKey(), -1.0)); //  Initialization:
 					_paths.clear();
+
 					for (node_data node : g.getV())
 					{
 						_paths.put(node.getKey(), new ArrayList<node_data>());
