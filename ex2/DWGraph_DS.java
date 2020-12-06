@@ -295,7 +295,7 @@ public class DWGraph_DS implements directed_weighted_graph
 				{
 					node_data neighbors_original_node=neighbors_original.next();
 					node_data neighbors_copy_node=((directed_weighted_graph) copygraph).getNode(neighbors_original_node.getKey());
-					if(getEdge(original.getKey(),neighbors_original_node.getKey())!=((directed_weighted_graph) copygraph).getEdge(copy.getKey(), neighbors_copy_node.getKey()))
+					if(getEdge(original.getKey(),neighbors_original_node.getKey()).equals(((directed_weighted_graph) copygraph).getEdge(copy.getKey(), neighbors_copy_node.getKey())))
 					{
 						return false;
 					}

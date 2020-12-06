@@ -25,6 +25,7 @@ public class shady_checker {
 		//System.out.println(((DWGraph_DS)copy_graph).nodeSize());
 		copy_algo.init(copy_graph);
 		copy_algo.save("copy.json");
+		System.out.println(original_algo.equals(original_algo.copy()));
 
 
 		

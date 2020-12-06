@@ -40,6 +40,42 @@ public class DWGraph_Algo implements dw_graph_algorithms
 	@Override
 	public directed_weighted_graph copy()
 	{
+		/*
+		@Override
+		public weighted_graph copy()  // deep-copy fo a graph.
+		{
+			if(g == null) return null;
+			weighted_graph newg = new WGraph_DS();  // the new graph.
+
+			Iterator<node_info> it0 = this.g.getV().iterator();
+			while(it0.hasNext()) // copies all the nodes from the copied graph to the new one.
+			{
+				node_info n = it0.next();
+				int k = n.getKey();
+				newg.addNode(k);
+				newg.getNode(k).setInfo(g.getNode(k).getInfo());  // copies the nodes info as well.
+			}
+
+			Iterator<node_info> it1 = this.g.getV().iterator();
+			int keyNei;
+			int keyNode;
+			double w;
+			while(it1.hasNext())  // connect the nodes of the new graph, the same way the copied one is.
+			{
+				keyNode = it1.next().getKey();
+
+				Iterator<node_info> it2 = g.getV(keyNode).iterator();
+				while(it2.hasNext())  // checking all nodes for connection.
+				{
+					keyNei = it2.next().getKey();
+					w = g.getEdge(keyNode, keyNei);
+
+					newg.connect(keyNode, keyNei, w);
+				}
+			}
+			return newg;
+		}*/
+
 		//TODO check if its needed to return or just say g=newgraph
 		 DWGraph_DS newgraph=new  DWGraph_DS();
 		 newgraph.copy(g);
@@ -47,10 +83,42 @@ public class DWGraph_Algo implements dw_graph_algorithms
 	}
 
 	@Override
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		// TODO implement isConnected().
-		return false;
+
+		if(g.getV().isEmpty() || g.getV().size() == 1)
+		{
+			return true; // empty graph or with only 1 node -> considered connected.
+		}
+		else
+		{
+			node_data node = g.getV().iterator().next(); // random node (just to check connectivity).
+			Dijkstra(node.getKey(),node.getKey(), 0);  // 0 means => only checking connectivity or path distance (see in Dijkstra static method).
+
+			boolean is = true;  // first assumption: is connected.
+
+			Iterator<node_data> it = g.getV().iterator();
+			while(it.hasNext() && is)
+			{
+				if(it.next().getTag() == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
+			}
+
+			if(is == false) return is;
+
+			node = g.getV().iterator().next(); // random node (just to check connectivity).
+			Dijkstra(node.getKey(),node.getKey(), 0);  // 0 means => only checking connectivity or path distance (see in Dijkstra static method).
+
+			it = g.getV().iterator();
+			while(it.hasNext() && is)
+			{
+				if(it.next().getTag() == -1) is = false;  // means -> someone HAS NOT been visited. therefore -> false.
+			}
+
+			return is;
+		}
 	}
+
 
 	@Override
 	public double shortestPathDist(int src, int dest) {
@@ -303,6 +371,39 @@ public class DWGraph_Algo implements dw_graph_algorithms
 			System.out.println(e + ", Problem: Graph_Algo -> private: Dijkstra");
 		}
 	}
+
+	private HashMap<Integer, edge_data> switchEdges()
+	{
+		HashMap<Integer, edge_data> temp = new HashMap<Integer, edge_data>();
+
+		for(node_data n : g.getV())
+		{
+			Iterator it = g.getE(n.getKey()).iterator();
+
+			while(it.hasNext())
+			{
+				edge_data e = (EdgeData)it.next();
+				temp.put(e.getDest(),t);
+			}
+		}
+
+		return temp;
+	}
+	 @Override
+		public boolean equals(Object n)
+		//equals method for nodedata
+		{
+			if(n==null)
+				return false;
+			if(n instanceof dw_graph_algorithms)
+			{
+				if(((dw_graph_algorithms) n).getGraph().equals(g))
+					return true;
+				else return false;
+			}
+			
+		return false;	
+		}
 	
 }
 
