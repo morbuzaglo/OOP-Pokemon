@@ -19,7 +19,7 @@ public class NodeData implements node_data
         this.info = "";
         this.tag = 0;
         this.Neighbors = new HashMap<Integer, node_data>(); // only the neighbors that this directed to.
-      //  Neighbors.put(key, this);
+
     }
 
     public NodeData(node_data n)
@@ -30,7 +30,6 @@ public class NodeData implements node_data
         this.info = n.getInfo();
         this.tag = n.getTag();
         this.Neighbors = new HashMap<Integer, node_data>(); // only the neighbors that this directed to.
-        //Neighbors.put(key, this);  // A NODE IS A NEIGHBOR TO ITSELF.
     }
 
     public HashMap<Integer, node_data> getNeis() // get HashMap of this node's neighbors.
