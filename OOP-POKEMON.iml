@@ -60,5 +60,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Ex2_Server_v0.13" level="project" />
   </component>
 </module>
