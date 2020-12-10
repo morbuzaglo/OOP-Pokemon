@@ -26,7 +26,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="gson-2.8.6" level="project" />
     <orderEntry type="library" name="org.junit.jupiter:junit-jupiter:5.4.2" level="project" />
     <orderEntry type="module-library" exported="">
       <library name="JUnit5.4">
