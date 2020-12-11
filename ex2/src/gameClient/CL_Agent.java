@@ -22,7 +22,7 @@ public class CL_Agent {
 		private directed_weighted_graph _gg;
 		private CL_Pokemon _curr_fruit;
 		private long _sg_dt;
-	    private ImageIcon agent=new ImageIcon("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\agent1.png");
+	    private ImageIcon agent=new ImageIcon("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\agent2.jpg");
 
 	    private double _value;
 		
