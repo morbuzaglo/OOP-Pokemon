@@ -173,13 +173,13 @@ class myDWGraph_AlgoTest
     void save() throws IOException {
         createWGraph(n,2*n);
         ga.init(g);
-        ga.save("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
+        ga.save("data\\save_test_file.json");
         g.removeNode(0);
-        ga.save("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
-        FileReader jsonFile1 = new FileReader("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
+        ga.save("data\\save_test_after_deleting_node_file.json");
+        FileReader jsonFile1 = new FileReader("data\\save_test_file.json");
        String  s1= jsonFile1.toString();
         jsonFile1.close();
-       FileReader jsonFile2 = new FileReader("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
+       FileReader jsonFile2 = new FileReader("data\\save_test_after_deleting_node_file.json");
        String s2= jsonFile2.toString();
         jsonFile2.close();
         boolean answer=s1.equals(s2);
@@ -195,8 +195,8 @@ class myDWGraph_AlgoTest
         dw_graph_algorithms algo2=new DWGraph_Algo();
         algo1.init(g1);
         algo2.init(g2);
-        algo1.load("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
-        algo2.load("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
+        algo1.load("data\\save_test_file.json");
+        algo2.load("data\\save_test_after_deleting_node_file.json");
         boolean answer =algo1.getGraph().equals(algo2.getGraph());
         assertFalse(answer,"should not be equals");
 

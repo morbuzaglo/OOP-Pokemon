@@ -26,6 +26,7 @@ public class SimpleGameClient {
 		//game.login(12345);  // please use your ID only as a key. uncomment this will upload your results to the server
 		node_data nn = gg.getNode(10);
 		String info = game.toString();
+		Arena _ar = new Arena();
 		System.out.println(info);
 		System.out.println(g);
 		System.out.println(game.getPokemons());
@@ -36,7 +37,9 @@ public class SimpleGameClient {
 		while(game.isRunning()) {
 			long t = game.timeToEnd();
 			String lg = game.move();
-			List<CL_Agent> log = Arena.getAgents(lg, gg);
+			_ar.updateAgents(lg, gg);
+			List<CL_Agent> log = _ar.getAgents();
+
 			for(int a=0;a< log.size();a++) {
 				CL_Agent r = log.get(a);
 				int dest = r.getNextNode();
