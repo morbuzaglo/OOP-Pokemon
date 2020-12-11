@@ -3,6 +3,9 @@ import api.edge_data;
 import gameClient.util.Point3D;
 import org.json.JSONObject;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class CL_Pokemon {
 	private edge_data _edge;
 	private double _value;
@@ -10,6 +13,7 @@ public class CL_Pokemon {
 	private Point3D _pos;
 	private double min_dist;
 	private int min_ro;
+	private ImageIcon poky=new ImageIcon("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\Cartoon-Free-PNG-Image.png");
 	
 	public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e) {
 		_type = t;
@@ -62,5 +66,10 @@ public class CL_Pokemon {
 
 	public void setMin_ro(int min_ro) {
 		this.min_ro = min_ro;
+	}
+
+	public ImageIcon get_image()
+	{
+		return poky;
 	}
 }

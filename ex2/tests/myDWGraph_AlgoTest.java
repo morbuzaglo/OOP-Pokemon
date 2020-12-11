@@ -3,6 +3,9 @@ import api.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -167,14 +170,40 @@ class myDWGraph_AlgoTest
     }
 
     @Test
-    void save()
-    {
-
+    void save() throws IOException {
+        createWGraph(n,2*n);
+        ga.init(g);
+        ga.save("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
+        g.removeNode(0);
+        ga.save("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
+        FileReader jsonFile1 = new FileReader("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
+       String  s1= jsonFile1.toString();
+        jsonFile1.close();
+       FileReader jsonFile2 = new FileReader("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
+       String s2= jsonFile2.toString();
+        jsonFile2.close();
+        boolean answer=s1.equals(s2);
+        assertFalse(answer,"should not be equal ");
     }
 
     @Test
     void load()
     {
+        directed_weighted_graph g1=new DWGraph_DS();
+        directed_weighted_graph g2=new DWGraph_DS();
+        dw_graph_algorithms algo1=new DWGraph_Algo();
+        dw_graph_algorithms algo2=new DWGraph_Algo();
+        algo1.init(g1);
+        algo2.init(g2);
+        algo1.load("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_file.json");
+        algo2.load("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\save_test_after_deleting_node_file.json");
+        boolean answer =algo1.getGraph().equals(algo2.getGraph());
+        assertFalse(answer,"should not be equals");
+
+
+
+
+
 
     }
 

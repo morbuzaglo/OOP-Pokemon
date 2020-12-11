@@ -192,14 +192,13 @@ public class DWGraph_Algo implements dw_graph_algorithms
 
 				try // adding the connections between the nodes in the graph into edgesList array.
 				{
-					if(node_neighbors_temp.getKey()!=node_temp.getKey())
-					{
+
 						json_temp.put("src",node_temp.getKey());
 						json_temp.put("w", g.getEdge(node_temp.getKey(), node_neighbors_temp.getKey()).getWeight());
 						json_temp.put("dest",node_neighbors_temp.getKey());
 
 						(edgesList).put(json_temp);
-					}
+
 				}
 				catch (JSONException e)
 				{
@@ -269,6 +268,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 				{
 					g_copy.connect(edgesList.getJSONObject(i).getInt("src"), edgesList.getJSONObject(i).getInt("dest"), edgesList.getJSONObject(i).getDouble("w"));
 
+
 				}
 
 				init(g_copy); // init graph to be the new graph
@@ -279,6 +279,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 				e2.printStackTrace();
 				return false;
 			}
+
 		}
 		catch(Exception e)
 		{

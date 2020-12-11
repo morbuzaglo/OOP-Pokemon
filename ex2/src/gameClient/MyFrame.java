@@ -89,7 +89,8 @@ public class MyFrame extends JFrame{
 			if(c!=null) {
 
 				geo_location fp = this._w2f.world2frame(c);
-				g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
+				g.drawImage(f.get_image().getImage(),(int)fp.x()-r, (int)fp.y()-r,f.get_image().getImageObserver());
+				//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
 			//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 				
 			}
@@ -104,12 +105,15 @@ public class MyFrame extends JFrame{
 		while(rs!=null && i<rs.size()) {
 			geo_location c = rs.get(i).getLocation();
 			int r=8;
-			i++;
 			if(c!=null) {
 
 				geo_location fp = this._w2f.world2frame(c);
-				g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
+				//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
+				g.drawImage(rs.get(i).get_image().getImage(),(int)fp.x()-r, (int)fp.y()-r,rs.get(i).get_image().getImageObserver());
+				g.drawString(c.toString(),(int)fp.x()-r,(int)fp.y()-r);
 			}
+			i++;
+
 		}
 	}
 	private void drawNode(node_data n, int r, Graphics g) {

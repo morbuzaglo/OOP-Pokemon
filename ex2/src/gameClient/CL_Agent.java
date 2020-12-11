@@ -7,6 +7,8 @@ import api.node_data;
 import gameClient.util.Point3D;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 public class CL_Agent {
 		public static final double EPS = 0.0001;
 		private static int _count = 0;
@@ -20,8 +22,9 @@ public class CL_Agent {
 		private directed_weighted_graph _gg;
 		private CL_Pokemon _curr_fruit;
 		private long _sg_dt;
-		
-		private double _value;
+	    private ImageIcon agent=new ImageIcon("C:\\Users\\shady\\Documents\\GitHub\\OOP-POKEMON\\data\\agent1.png");
+
+	    private double _value;
 		
 		
 		public CL_Agent(directed_weighted_graph g, int start_node) {
@@ -166,4 +169,8 @@ public class CL_Agent {
 		public void set_sg_dt(long _sg_dt) {
 			this._sg_dt = _sg_dt;
 		}
+	public ImageIcon get_image()
+	{
+		return agent;
+	}
 	}
