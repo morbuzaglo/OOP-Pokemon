@@ -1,27 +1,31 @@
 package gameClient;
+import api.*;
 
 import Server.Game_Server_Ex2;
-import api.directed_weighted_graph;
-import api.edge_data;
 import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Ex2_Client implements Runnable{
+public class Ex2_Client implements Runnable
+{
 	private static MyFrame _win;
 	private static Arena _ar;
-	public static void main(String[] a) {
+	public static void main(String[] a)
+	{
 		Thread client = new Thread(new Ex2_Client());
 		client.start();
 	}
 	
 	@Override
-	public void run() {
+	public void run()
+	{
 		int scenario_num = 11;
 		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
 	//	int id = 999;
@@ -30,7 +34,7 @@ public class Ex2_Client implements Runnable{
 		String pks = game.getPokemons();
 		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
 		init(game);
-		
+
 		game.startGame();
 		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
 		int ind=0;
@@ -60,23 +64,27 @@ public class Ex2_Client implements Runnable{
 	 * @param
 	 */
 	private static void moveAgants(game_service game, directed_weighted_graph gg) {
+
 		String lg = game.move();
-		List<CL_Agent> log = Arena.getAgents(lg, gg);
-		_ar.setAgents(log);
-		//ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
+		_ar.updateAgents(lg, gg);
+		List<CL_Agent> log = _ar.getAgents();
+
 		String fs =  game.getPokemons();
-		List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
-		_ar.setPokemons(ffs);
+		_ar.updatePokemons(fs);
+		List<CL_Pokemon> ffs = _ar.getPokemons();
+
 		for(int i=0;i<log.size();i++) {
 			CL_Agent ag = log.get(i);
 			int id = ag.getID();
 			int dest = ag.getNextNode();
 			int src = ag.getSrcNode();
 			double v = ag.getValue();
+
 			if(dest==-1) {
 				dest = nextNode(gg, src);
 				game.chooseNextEdge(ag.getID(), dest);
-				System.out.println("Agent: "+id+", val: "+v+"   turned to node: "+dest);
+				System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
+
 			}
 		}
 	}
@@ -100,11 +108,17 @@ public class Ex2_Client implements Runnable{
 	private void init(game_service game) {
 		String g = game.getGraph();
 		String fs = game.getPokemons();
-		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
-		//gg.init(g);
+		directed_weighted_graph gg = new DWGraph_DS();
+		dw_graph_algorithms ag = new DWGraph_Algo();
+		ag.init(gg);
+		String fileName = "new_funny_graph.json";
+		CreateFile(fileName, g);
+		ag.load(fileName);
+		gg = ag.getGraph();
+
 		_ar = new Arena();
 		_ar.setGraph(gg);
-		_ar.setPokemons(Arena.json2Pokemons(fs));
+		_ar.updatePokemons(fs);
 		_win = new MyFrame("test Ex2");
 		_win.setSize(1000, 700);
 		_win.update(_ar);
@@ -120,7 +134,8 @@ public class Ex2_Client implements Runnable{
 			System.out.println(info);
 			System.out.println(game.getPokemons());
 			int src_node = 0;  // arbitrary node, you should start at one of the pokemon
-			ArrayList<CL_Pokemon> cl_fs = Arena.json2Pokemons(game.getPokemons());
+			_ar.updatePokemons(game.getPokemons());
+			List<CL_Pokemon> cl_fs = _ar.getPokemons();
 			for(int a = 0;a<cl_fs.size();a++) { Arena.updateEdge(cl_fs.get(a),gg);}
 			for(int a = 0;a<rs;a++) {
 				int ind = a%cl_fs.size();
@@ -132,5 +147,29 @@ public class Ex2_Client implements Runnable{
 			}
 		}
 		catch (JSONException e) {e.printStackTrace();}
+	}
+
+	public void CreateFile(String name, String g) {
+		try {
+			File myObj = new File(name);
+			if (myObj.createNewFile()) {
+				System.out.println("File created: " + myObj.getName());
+			} else {
+				System.out.println("File already exists.");
+			}
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+
+		try {
+			FileWriter myWriter = new FileWriter(name);
+			myWriter.write(g);
+			myWriter.close();
+			System.out.println("Successfully wrote to the file.");
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
 	}
 }
