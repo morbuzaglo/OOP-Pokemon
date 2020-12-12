@@ -25,7 +25,7 @@ public class CL_Agent
 		private CL_Pokemon _curr_fruit;
 		private long _sg_dt;
 		private double _value;
-		private ImageIcon agent=new ImageIcon("agent1.jpg");
+		private ImageIcon agent=new ImageIcon("agent3.jpg");
 
 		public CL_Agent(directed_weighted_graph g, int start_node)
 		{
