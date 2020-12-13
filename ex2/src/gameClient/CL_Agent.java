@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 
-public class CL_Agent
+public class CL_Agent implements Runnable
 {
 		public static final double EPS = 0.0001;
 		private static int _count = 0;
@@ -25,7 +25,7 @@ public class CL_Agent
 		private CL_Pokemon _curr_fruit;
 		private long _sg_dt;
 		private double _value;
-		private ImageIcon agent=new ImageIcon("agent1.jpg");
+		private ImageIcon agent=new ImageIcon("agent1.png");
 
 		public CL_Agent(directed_weighted_graph g, int start_node)
 		{
@@ -225,5 +225,11 @@ public class CL_Agent
 	public ImageIcon get_image()
 	{
 		return agent;
+	}
+
+	@Override
+	public void run()
+	{
+
 	}
 }
