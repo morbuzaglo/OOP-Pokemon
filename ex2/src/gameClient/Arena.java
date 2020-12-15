@@ -11,7 +11,6 @@ import gameClient.util.Range2Range;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -246,4 +245,5 @@ public class Arena
 		Range2Range ans = new Range2Range(world, frame);
 		return ans;
 	}
+
 }
