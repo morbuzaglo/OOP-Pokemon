@@ -33,6 +33,7 @@ public class Ex2_Client implements Runnable
 		String g = game.getGraph();
 		String pks = game.getPokemons();
 		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
+		System.out.println("before init");
 		init(game);
 
 		game.startGame();
@@ -40,7 +41,8 @@ public class Ex2_Client implements Runnable
 		int ind=0;
 		long dt=100;
 		
-		while(game.isRunning()) {
+		while(game.isRunning())
+		{
 			moveAgants(game, gg);
 			try {
 				if(ind%1==0) {_win.repaint();}
@@ -66,7 +68,7 @@ public class Ex2_Client implements Runnable
 	private static void moveAgants(game_service game, directed_weighted_graph gg) {
 
 		String lg = game.move();
-		_ar.updateAgents(lg, gg);
+		_ar.updateAgents(lg);
 		List<CL_Agent> log = _ar.getAgents();
 
 		String fs =  game.getPokemons();
@@ -107,6 +109,7 @@ public class Ex2_Client implements Runnable
 	}
 	private void init(game_service game) {
 		String g = game.getGraph();
+		System.out.println("afetr init");
 		String fs = game.getPokemons();
 		directed_weighted_graph gg = new DWGraph_DS();
 		dw_graph_algorithms ag = new DWGraph_Algo();
@@ -116,7 +119,7 @@ public class Ex2_Client implements Runnable
 		ag.load(fileName);
 		gg = ag.getGraph();
 
-		_ar = new Arena();
+		_ar = new Arena(game);
 		_ar.setGraph(gg);
 		_ar.updatePokemons(fs);
 		_win = new MyFrame("test Ex2");

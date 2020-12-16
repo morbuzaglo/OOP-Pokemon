@@ -7,12 +7,13 @@ import javax.swing.*;
 public class CL_Pokemon
 {
 	private edge_data _edge;
+	private int id = 0;
 	private double _value;
 	private int _type;
 	private Point3D _pos;
 	private double min_dist;
 	private int min_ro;
-	private ImageIcon poky=new ImageIcon("Cartoon-Free-PNG-Image.png");
+	private ImageIcon poky = new ImageIcon("Cartoon-Free-PNG-Image.png");
 	
 	public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e)
 	{
@@ -23,6 +24,7 @@ public class CL_Pokemon
 		_pos = p;
 		min_dist = -1;
 		min_ro = -1;
+		this.id = this.id++;
 	}
 
 	public String toString()
@@ -38,6 +40,11 @@ public class CL_Pokemon
 	public void set_edge(edge_data _edge)
 	{
 		this._edge = _edge;
+	}
+
+	public int getID()
+	{
+		return this.id;
 	}
 
 	public Point3D getLocation()

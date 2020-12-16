@@ -1,19 +1,21 @@
 package gameClient;
 
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.geo_location;
-import api.node_data;
+import api.*;
 import gameClient.util.Point3D;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.plaf.TableHeaderUI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class CL_Agent implements Runnable
 {
 		public static final double EPS = 0.0001;
 		private static int _count = 0;
 		private static int _seed = 3331;
+
 		private int _id;
 		// private int key;
 
@@ -25,17 +27,23 @@ public class CL_Agent implements Runnable
 		private CL_Pokemon _curr_fruit;
 		private long _sg_dt;
 		private double _value;
-		private ImageIcon agent=new ImageIcon("agent1.png");
+		private Arena ar;
+		private ImageIcon agent = new ImageIcon("agent1.png");
 
-		public CL_Agent(directed_weighted_graph g, int start_node)
+		public static int count = 0;
+		public static ArrayList<CL_Pokemon> unAvailablePoks = new ArrayList<>();
+
+		public CL_Agent(Arena ar, int start_node)
 		{
-			_graph = g;
+			this.ar = ar;
+			_graph = ar.getGraph();
 			setMoney(0);
 			this._curr_node = _graph.getNode(start_node);
 			_pos = _curr_node.getLocation();
 			_id = -1;
 			setSpeed(0);
 		}
+
 
 		public void setID(int id)
 		{
@@ -154,7 +162,7 @@ public class CL_Agent implements Runnable
 			this._curr_fruit = curr_fruit;
 		}
 
-		public void set_SDT(long ddtt)
+		public void set_SDT(long ddtt) // TODO is correct???
 		{
 			long ddt = ddtt;
 			if(this._curr_edge != null)
@@ -178,16 +186,18 @@ public class CL_Agent implements Runnable
 
 			this._sg_dt = _sg_dt;
 		}
-		
-		public edge_data get_curr_edge()
+
+	public long get_sg_dt()
+	{
+		set_SDT(100);
+		return _sg_dt;
+	}
+
+	public edge_data get_curr_edge()
 		{
 			return this._curr_edge;
 		}
 
-		public long get_sg_dt()
-		{
-			return _sg_dt;
-		}
 
 	public void update(String json)
 	{
@@ -230,6 +240,124 @@ public class CL_Agent implements Runnable
 	@Override
 	public void run()
 	{
+		while(ar.getGame().isRunning()) // while game IsRunning
+		{
+			this._curr_fruit = null;
 
+			bestPok();
+
+			CL_Pokemon p  = this._curr_fruit;
+			ar.updatePokemons(ar.getGame().getPokemons());
+
+			if(p != null && p.get_edge() != null)
+			{
+				List<node_data> list = ar.getAlgo().shortestPath(getSrcNode(), p.get_edge().getSrc());
+				if(list == null) continue;
+				//System.out.println("SrcNode:" + getSrcNode());
+
+				Stack<Integer> st = new Stack<>();
+
+				for(int i =  list.size()-1; i > 0; i--)
+				{
+					st.push(list.get(i).getKey());
+					System.out.print("Path of agent" + getID() + ": "+ list.get(i).getKey() + " ");
+				}
+				System.out.println();
+
+				boolean gotcha = false;
+				boolean almostCaught = false;
+
+				while(!gotcha)
+				{
+					ar.updateAgents(ar.getGame().getAgents());
+
+					while(isMoving())
+					{
+						//System.out.println("wait");
+						ar.updateAgents(ar.getGame().getAgents());
+					}
+
+					ar.updatePokemons(ar.getGame().getPokemons());
+
+					if(!st.isEmpty())
+					{
+						int n = st.pop();
+						this.ar.getGame().chooseNextEdge(this._id, n);
+
+						//System.out.println("PULLED NODE: " + n);
+
+						try
+						{
+							Thread.sleep(get_sg_dt());
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					else if(!almostCaught && getSrcNode() == p.get_edge().getSrc()) // path stack is empty
+					{
+						//System.out.println("src node: " + getSrcNode());
+						int n = p.get_edge().getDest();
+						this.ar.getGame().chooseNextEdge(this._id, n);
+
+						almostCaught = true;
+
+						try
+						{
+							Thread.sleep(get_sg_dt());
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					else if(almostCaught && getSrcNode() == p.get_edge().getDest())
+					{
+						gotcha = true;
+						unAvailablePoks.remove(p); // TODO unAvailablePoks doens't good! (pokemon always created as new).
+					}
+					//System.out.println("almostCaught:" + almostCaught);
+					//System.out.println("gotcha:" + gotcha);
+					//System.out.println("nextNode:" + getNextNode());
+
+					//System.out.println("pokDest:" + p.get_edge().getDest());
+					//System.out.println("srcNode:" + getSrcNode());
+					//System.out.println();
+				}
+			}
+		}
+	}
+
+	synchronized private void bestPok()
+	{
+		CL_Pokemon p = null;
+
+		double minDist = Double.POSITIVE_INFINITY;
+
+		dw_graph_algorithms ga = ar.getAlgo();
+
+		//synchronized (ar.getPokemons())
+		//{
+
+			for (int i =0; i < ar.getPokemons().size(); i++)  // TODO change -> to בעיית המזכירה!
+			{
+				ar.updatePokemons(ar.getGame().getPokemons());
+				ar.updateAgents(ar.getGame().getAgents());
+
+				if(!unAvailablePoks.contains(ar.getPokemons().get(i)) && ar.getPokemons().get(i).get_edge() != null)
+				{
+					double d = ga.shortestPathDist(getSrcNode(), ar.getPokemons().get(i).get_edge().getSrc());
+
+					if(d < minDist && d != -1)
+					{
+						p = ar.getPokemons().get(i);
+					}
+				}
+			}
+
+			this._curr_fruit = p;
+			unAvailablePoks.add(p);
+		//}
 	}
 }

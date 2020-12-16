@@ -1,23 +1,22 @@
 package gameClient;
 
 import Server.Game_Server_Ex2;
-import api.*;
 import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 
 public class Ex2 implements Runnable
 {
-    private int scenario_num = 11;
+    private int scenario_num = 18;
     private int ID = 318670403;
     private  MyFrame _win;
     private game_service _game;
     private Arena _ar;
+    public double LastMove;
+    public static boolean isRunning;
 
     public static void main(String[] a)
     {
@@ -35,6 +34,8 @@ public class Ex2 implements Runnable
 
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.
+
+
     }
 
     private void init()
@@ -58,13 +59,42 @@ public class Ex2 implements Runnable
         int ind = 0;
         long dt = 100; // MAX moves frequency !
 
+        _ar.addNewAgents(_game.move());
+
+        moveAgents();
         for(int i = 0; i < _ar.getAgents().size(); i++)
         {
-            
+            Thread th = new Thread( _ar.getAgents().get(i));
+            th.start();
         }
+
+        isRunning = true;
+        while(_game.isRunning())
+        {
+            moveAgents();
+
+            try
+            {
+                if(ind%1 == 0)
+                {
+                    _win.repaint();
+                }
+                Thread.sleep(100);
+                ind++;
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        String res = _game.toString();
+
+        System.out.println(res);
+        System.exit(0);
     }
 
-         /* * * * * * * * * * * * * * * DECISION FUNCTIONS * * * * * * * * * * * * * * * * * * */
+             /* * * * * * * * * * * * * * * DECISION FUNCTIONS * * * * * * * * * * * * * * * * * * */
 
     private void AgentsFirstSet()
     {
@@ -86,8 +116,12 @@ public class Ex2 implements Runnable
             {
                 int ind = i%poks.size();
                 CL_Pokemon c = poks.get(ind);
+
                 int nn = c.get_edge().getDest();
-                if(c.getType()<0 ) {nn = c.get_edge().getSrc();}
+                if(c.getType() < 0 )
+                {
+                    nn = c.get_edge().getSrc();
+                }
 
                 _game.addAgent(nn);
             }
@@ -96,6 +130,19 @@ public class Ex2 implements Runnable
         {
             e.printStackTrace();
         }
+    }
+
+    private void moveAgents()  // TODO implement moveAgents!
+    {
+        game_service game = _ar.getGame();
+
+        String lg = game.move();
+        _ar.updateAgents(lg);
+
+        String fs = game.getPokemons();
+        _ar.updatePokemons(fs);
+
+
     }
 }
 
