@@ -5,7 +5,6 @@ import gameClient.util.Point3D;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.plaf.TableHeaderUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -31,7 +30,7 @@ public class CL_Agent implements Runnable
 		private ImageIcon agent = new ImageIcon("agent1.png");
 
 		public static int count = 0;
-		public static ArrayList<CL_Pokemon> unAvailablePoks = new ArrayList<>();
+		public static ArrayList<edge_data> unAvailableEdges = new ArrayList<>();
 
 		public CL_Agent(Arena ar, int start_node)
 		{
@@ -257,10 +256,11 @@ public class CL_Agent implements Runnable
 
 				Stack<Integer> st = new Stack<>();
 
+				System.out.print("Path of agent" + getID() + ": ");
 				for(int i =  list.size()-1; i > 0; i--)
 				{
 					st.push(list.get(i).getKey());
-					System.out.print("Path of agent" + getID() + ": "+ list.get(i).getKey() + " ");
+					System.out.print(list.get(i).getKey() + " ");
 				}
 				System.out.println();
 
@@ -315,7 +315,7 @@ public class CL_Agent implements Runnable
 					else if(almostCaught && getSrcNode() == p.get_edge().getDest())
 					{
 						gotcha = true;
-						unAvailablePoks.remove(p); // TODO unAvailablePoks doens't good! (pokemon always created as new).
+						unAvailableEdges.remove(p.get_edge()); // TODO unAvailablePoks doens't good! (pokemon always created as new).
 					}
 					//System.out.println("almostCaught:" + almostCaught);
 					//System.out.println("gotcha:" + gotcha);
@@ -337,16 +337,20 @@ public class CL_Agent implements Runnable
 
 		dw_graph_algorithms ga = ar.getAlgo();
 
-		//synchronized (ar.getPokemons())
-		//{
+		synchronized (ar.getPokemons())
+		{
+
+			ar.updatePokemons(ar.getGame().getPokemons());
+			ar.updateAgents(ar.getGame().getAgents());
 
 			for (int i =0; i < ar.getPokemons().size(); i++)  // TODO change -> to בעיית המזכירה!
 			{
 				ar.updatePokemons(ar.getGame().getPokemons());
 				ar.updateAgents(ar.getGame().getAgents());
 
-				if(!unAvailablePoks.contains(ar.getPokemons().get(i)) && ar.getPokemons().get(i).get_edge() != null)
+				if(!unAvailableEdges.contains(ar.getPokemons().get(i).get_edge()) )//&& ar.getPokemons().get(i).get_edge() != null)
 				{
+					System.out.println(ar.getPokemons().get(i));
 					double d = ga.shortestPathDist(getSrcNode(), ar.getPokemons().get(i).get_edge().getSrc());
 
 					if(d < minDist && d != -1)
@@ -357,7 +361,7 @@ public class CL_Agent implements Runnable
 			}
 
 			this._curr_fruit = p;
-			unAvailablePoks.add(p);
-		//}
+			unAvailableEdges.add(p.get_edge());
+		}
 	}
 }

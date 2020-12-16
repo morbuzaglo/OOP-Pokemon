@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Ex2 implements Runnable
 {
-    private int scenario_num = 18;
+    private int scenario_num = 11;
     private int ID = 318670403;
     private  MyFrame _win;
     private game_service _game;
@@ -61,17 +61,17 @@ public class Ex2 implements Runnable
 
         _ar.addNewAgents(_game.move());
 
-        moveAgents();
+        moveAgents(this._ar);
+
         for(int i = 0; i < _ar.getAgents().size(); i++)
         {
             Thread th = new Thread( _ar.getAgents().get(i));
             th.start();
         }
 
-        isRunning = true;
         while(_game.isRunning())
         {
-            moveAgents();
+            moveAgents(this._ar);
 
             try
             {
@@ -79,7 +79,7 @@ public class Ex2 implements Runnable
                 {
                     _win.repaint();
                 }
-                Thread.sleep(100);
+                Thread.sleep(10);
                 ind++;
             }
             catch(Exception e)
@@ -132,7 +132,7 @@ public class Ex2 implements Runnable
         }
     }
 
-    private void moveAgents()  // TODO implement moveAgents!
+    private static void moveAgents(Arena _ar)  // TODO implement moveAgents!
     {
         game_service game = _ar.getGame();
 
@@ -141,8 +141,6 @@ public class Ex2 implements Runnable
 
         String fs = game.getPokemons();
         _ar.updatePokemons(fs);
-
-
     }
 }
 
