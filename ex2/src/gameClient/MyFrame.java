@@ -96,6 +96,7 @@ public class MyFrame extends JFrame
 
 	private void drawGraph(Graphics g)
 	{
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		directed_weighted_graph gg = _ar.getGraph();
 		Iterator<node_data> iter = gg.getV().iterator();
 		while(iter.hasNext())
@@ -157,7 +158,7 @@ public class MyFrame extends JFrame
 				geo_location fp = this._w2f.world2frame(c);
 				//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
 				g.drawImage(rs.get(i).get_image().getImage(), (int) fp.x() - r, (int) fp.y() - r, rs.get(i).get_image().getImageObserver());
-				//g.drawString(c.toString(), (int) fp.x() - r, (int) fp.y() - r);
+				g.drawString(""+rs.get(i).getID(), (int) fp.x() - r, (int) fp.y() - r);
 			}
 
 			i++;
