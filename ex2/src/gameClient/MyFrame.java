@@ -10,6 +10,8 @@ import gameClient.util.Range2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,7 @@ public class MyFrame extends JFrame
 		super(a);
 		int _ind = 0;
 	}
+
 	public void update(Arena ar)
 	{
 		this._ar = ar;

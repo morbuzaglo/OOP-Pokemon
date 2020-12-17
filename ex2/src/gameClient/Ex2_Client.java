@@ -17,19 +17,19 @@ public class Ex2_Client implements Runnable
 {
 	private static MyFrame _win;
 	private static Arena _ar;
+	private static GUI gui;
 	public static void main(String[] a)
 	{
-		Thread client = new Thread(new Ex2_Client());
-		client.start();
+		gui = new GUI();;
 	}
 	
 	@Override
-	public void run()
+	public  void run()
 	{
-		int scenario_num = 0;
+		int scenario_num =gui.get_level();
 		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-	//	int id = 999;
-	//	game.login(id);
+	    int id = gui.get_id();
+	    game.login(id);
 		String g = game.getGraph();
 		String pks = game.getPokemons();
 		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
@@ -120,7 +120,7 @@ public class Ex2_Client implements Runnable
 		_ar.setGraph(gg);
 		_ar.updatePokemons(fs);
 		_win = new MyFrame("test Ex2");
-		_win.setSize(1000, 700);
+		_win.setSize(1240, 720);
 		_win.update(_ar);
 
 	
@@ -171,5 +171,10 @@ public class Ex2_Client implements Runnable
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
+	}
+	public static void startgame()
+	{
+		Thread client = new Thread(new Ex2_Client());
+		client.start();
 	}
 }
