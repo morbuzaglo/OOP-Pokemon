@@ -28,6 +28,7 @@ public class Arena
 
 	private static Point3D MIN = new Point3D(0, 100,0);
 	private static Point3D MAX = new Point3D(0, 100,0);
+	private ArrayList<edge_data> PoksEdges = new ArrayList<>();
 
 	public Arena()
 	{
@@ -41,6 +42,11 @@ public class Arena
 		this._info = new ArrayList<String>();
 
 		init();
+	}
+
+	public ArrayList<edge_data> getPoksEdges()
+	{
+		return this.PoksEdges;
 	}
 
 	public void setPokemons(List<CL_Pokemon> f)
@@ -179,6 +185,48 @@ public class Arena
 			e.printStackTrace();
 		}
 		this._agents =  ans;
+
+		double R = MIN.distance(MAX)/2;
+		System.out.println("R ====" + R);
+		if(_agents.size() == 2 || _agents.size() == 1)
+		{
+			Iterator<CL_Agent> iter = _agents.iterator();
+
+			while(iter.hasNext())
+			{
+				CL_Agent ag= iter.next();
+				ag.setSearchRadius(R);
+				double x = (MIN.x()+MAX.x())/2;
+				double y = (MIN.y()+MAX.y())/2;
+				ag.setSearchPoint(new Point3D(x,y));
+			}
+		}
+		else
+		{
+			int size = _agents.size();
+			double rad = 2*Math.PI/size;
+			double xc = (MIN.x()+MAX.x())/2;
+			double yc = (MIN.y()+MAX.y())/2;
+
+			double x;
+			double y;
+
+			int count = 0;
+
+			Iterator<CL_Agent> iter = _agents.iterator();
+
+			while(iter.hasNext())
+			{
+				x = xc + R*Math.sin(count*rad);
+				y = yc + R*Math.cos(count*rad);
+
+				count++;
+
+				CL_Agent ag= iter.next();
+				ag.setSearchRadius(R);
+				ag.setSearchPoint(new Point3D(x,y));
+			}
+		}
 	}
 
 	public void updateAgents(String currAgentsData) // the string
@@ -200,34 +248,57 @@ public class Arena
 
 	public void updatePokemons(String fs)
 	{
-		ArrayList<CL_Pokemon> ans = new  ArrayList<CL_Pokemon>();
 		try
 		{
-			JSONObject ttt = new JSONObject(fs);
-			JSONArray ags = ttt.getJSONArray("Pokemons");
-
-			for(int i = 0; i < ags.length(); i++)
+			synchronized (game)
 			{
-				JSONObject pp = ags.getJSONObject(i);
-				JSONObject pk = pp.getJSONObject("Pokemon");
-				int t = pk.getInt("type");
-				double v = pk.getDouble("value");
-				//double s = 0;//pk.getDouble("speed");
-				String p = pk.getString("pos");
+				ArrayList<CL_Pokemon> ans = new  ArrayList<CL_Pokemon>();
+				try
+				{
+					JSONObject ttt = new JSONObject(fs);
+					JSONArray ags = ttt.getJSONArray("Pokemons");
 
-				CL_Pokemon f = new CL_Pokemon(new Point3D(p), t, v, 0, null);
-				ans.add(f);
+					for(int i = 0; i < ags.length(); i++)
+					{
+						JSONObject pp = ags.getJSONObject(i);
+						JSONObject pk = pp.getJSONObject("Pokemon");
+						int t = pk.getInt("type");
+						double v = pk.getDouble("value");
+						//double s = 0;//pk.getDouble("speed");
+						String p = pk.getString("pos");
+
+						CL_Pokemon f = new CL_Pokemon(new Point3D(p), t, v, 0, null);
+						ans.add(f);
+					}
+				}
+				catch (JSONException e)
+				{
+					e.printStackTrace();
+				}
+				this._pokemons = ans;
+
+				for(int i = 0; i < ans.size(); i++)
+				{
+					updateEdge(getPokemons().get(i), getGraph());
+				}
+
+				ArrayList<edge_data> temp = new ArrayList<>();
+
+				for(int i = 0; i < getPokemons().size(); i++)
+				{
+					temp.add(getPokemons().get(i).get_edge());
+				}
+
+				PoksEdges = temp;
 			}
 		}
-		catch (JSONException e) {e.printStackTrace();}
-		this._pokemons = ans;
-		for(int i = 0; i < ans.size(); i++)
+		catch (Exception e)
 		{
-			updateEdge(getPokemons().get(i), getGraph());
+			return;
 		}
 	}
 
-	public static void updateEdge(CL_Pokemon fr, directed_weighted_graph g)
+	public void updateEdge(CL_Pokemon fr, directed_weighted_graph g)
 	{
 		//	oop_edge_data ans = null;
 		Iterator<node_data> itr = g.getV().iterator();
@@ -239,7 +310,10 @@ public class Arena
 			{
 				edge_data e = iter.next();
 				boolean f = isOnEdge(fr.getLocation(), e,fr.getType(), g);
-				if(f) {fr.set_edge(e);}
+				if(f)
+				{
+					fr.set_edge(e);
+				}
 			}
 		}
 	}

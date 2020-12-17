@@ -5,7 +5,9 @@ import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.plaf.TableHeaderUI;
 import java.util.List;
+import java.util.Random;
 
 
 public class Ex2 implements Runnable
@@ -16,10 +18,20 @@ public class Ex2 implements Runnable
     private game_service _game;
     private Arena _ar;
     public double LastMove;
+    private static GUI gui;
     public static boolean isRunning;
 
     public static void main(String[] a)
     {
+        GUI _gui = new GUI();
+        gui = _gui;
+
+        int ind = 0;
+
+        while(!gui.getStartGame())
+        {
+            System.out.println(gui.getStartGame());
+        }
         Thread client = new Thread(new Ex2());
         client.start();
     }
@@ -27,15 +39,14 @@ public class Ex2 implements Runnable
     @Override
     public void run()
     {
-        game_service game = Game_Server_Ex2.getServer(this.scenario_num); // you have [0,23] games
-        // game.login(id);
+        int scenario_num = gui.get_level();
+        game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
+        int id = gui.get_id();
+        //game.login(id);
 
         this._game = game;
-
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.
-
-
     }
 
     private void init()
@@ -69,9 +80,18 @@ public class Ex2 implements Runnable
             th.start();
         }
 
+        long minTime = Long.MAX_VALUE;
         while(_game.isRunning())
         {
-            moveAgents(this._ar);
+            moveAgents(_ar);
+
+            for(int i = 0; i < _ar.getAgents().size(); i++)
+            {
+                if(_ar.getAgents().get(i).get_sg_dt() < minTime)
+                {
+                    minTime = _ar.getAgents().get(i).get_sg_dt();
+                }
+            }
 
             try
             {
@@ -79,7 +99,7 @@ public class Ex2 implements Runnable
                 {
                     _win.repaint();
                 }
-                Thread.sleep(10);
+                Thread.sleep((100 < minTime) ? minTime : 100);
                 ind++;
             }
             catch(Exception e)
@@ -109,21 +129,18 @@ public class Ex2 implements Runnable
 
             for(int i = 0 ; i < poks.size() ; i++)
             {
-                Arena.updateEdge(poks.get(i), _ar.getGraph());
+                _ar.updateEdge(poks.get(i), _ar.getGraph());
             }
 
-            for(int i = 0 ; i < numOfAgents ; i++) // TODO Agents first set!
+            Random rand = new Random(1);
+
+            for(int i = 0 ; i < numOfAgents ; i++)
             {
-                int ind = i%poks.size();
-                CL_Pokemon c = poks.get(ind);
+                CL_Pokemon pok = poks.get(rand.nextInt(poks.size()));
 
-                int nn = c.get_edge().getDest();
-                if(c.getType() < 0 )
-                {
-                    nn = c.get_edge().getSrc();
-                }
+                int startNode = pok.get_edge().getSrc();
 
-                _game.addAgent(nn);
+                _game.addAgent(startNode);
             }
         }
         catch (JSONException e)
@@ -132,15 +149,23 @@ public class Ex2 implements Runnable
         }
     }
 
-    private static void moveAgents(Arena _ar)  // TODO implement moveAgents!
+    public static void moveAgents(Arena _ar)  // TODO implement moveAgents!
     {
-        game_service game = _ar.getGame();
+        try
+        {
+            game_service game = _ar.getGame();
 
-        String lg = game.move();
-        _ar.updateAgents(lg);
+            String lg = game.move();
 
-        String fs = game.getPokemons();
-        _ar.updatePokemons(fs);
+            _ar.updateAgents(lg);
+
+            String fs = game.getPokemons();
+            _ar.updatePokemons(fs);
+        }
+        catch (Exception e)
+        {
+                return;
+        }
     }
 }
 

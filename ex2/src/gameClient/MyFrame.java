@@ -10,6 +10,9 @@ import gameClient.util.Range2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class MyFrame extends JFrame
 		super(a);
 		int _ind = 0;
 	}
+
 	public void update(Arena ar)
 	{
 		this._ar = ar;
@@ -31,8 +35,8 @@ public class MyFrame extends JFrame
 
 	private void updateFrame()
 	{
-		Range rx = new Range(20,this.getWidth()-20);
-		Range ry = new Range(this.getHeight()-10,150);
+		Range rx = new Range(100,this.getWidth()-100);
+		Range ry = new Range(this.getHeight()-30,300);
 		Range2D frame = new Range2D(rx,ry);
 		directed_weighted_graph g = _ar.getGraph();
 		_w2f = Arena.w2f(g,frame);
@@ -48,13 +52,16 @@ public class MyFrame extends JFrame
 		Graphics buffer_graphics;
 		// Create a new "canvas"
 		buffer_image = createImage(w, h);
-		buffer_graphics = buffer_image.getGraphics();
-
-		// Draw on the new "canvas"
+		buffer_graphics=buffer_image.getGraphics();
 		paintComponents(buffer_graphics);
 
+
+		// Draw on the new "canvas"
+
 		// "Switch" the old "canvas" for the new one
+
 		g.drawImage(buffer_image, 0, 0, this);
+
 	}
 
 	@Override
@@ -63,7 +70,13 @@ public class MyFrame extends JFrame
 		int w = this.getWidth();
 		int h = this.getHeight();
 		g.clearRect(0, 0, w, h);
-		//	updateFrame();
+		ImageIcon background =new ImageIcon("background1.png");
+		BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics2D = resizedImage.createGraphics();
+		graphics2D.drawImage(background.getImage(), 0, 0, w, h, null);
+		graphics2D.dispose();
+		g.drawImage(resizedImage,0,0,background.getImageObserver());
+		updateFrame();
 		drawPokemons(g);
 		drawGraph(g);
 		drawAgants(g);
@@ -78,7 +91,7 @@ public class MyFrame extends JFrame
 		{
 			g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
 		}
-		
+
 	}
 
 	private void drawGraph(Graphics g)
@@ -123,7 +136,7 @@ public class MyFrame extends JFrame
 					geo_location fp = this._w2f.world2frame(c);
 					g.drawImage(f.get_image().getImage(),(int)fp.x()-r, (int)fp.y()-r,f.get_image().getImageObserver());
 					//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
-				//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+					//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 
 				}
 			}
@@ -132,7 +145,7 @@ public class MyFrame extends JFrame
 	private void drawAgants(Graphics g)
 	{
 		List<CL_Agent> rs = _ar.getAgents();
-	//	Iterator<OOP_Point3D> itr = rs.iterator();
+		//	Iterator<OOP_Point3D> itr = rs.iterator();
 		g.setColor(Color.red);
 		int i=0;
 		while(rs!=null && i<rs.size())
@@ -144,7 +157,7 @@ public class MyFrame extends JFrame
 				geo_location fp = this._w2f.world2frame(c);
 				//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
 				g.drawImage(rs.get(i).get_image().getImage(), (int) fp.x() - r, (int) fp.y() - r, rs.get(i).get_image().getImageObserver());
-				g.drawString(c.toString(), (int) fp.x() - r, (int) fp.y() - r);
+				//g.drawString(c.toString(), (int) fp.x() - r, (int) fp.y() - r);
 			}
 
 			i++;
@@ -166,6 +179,6 @@ public class MyFrame extends JFrame
 		geo_location s0 = this._w2f.world2frame(s);
 		geo_location d0 = this._w2f.world2frame(d);
 		g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
-	//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+		//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 	}
 }

@@ -3,6 +3,7 @@ import api.edge_data;
 import gameClient.util.Point3D;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class CL_Pokemon
 {
@@ -14,7 +15,7 @@ public class CL_Pokemon
 	private double min_dist;
 	private int min_ro;
 	private ImageIcon poky = new ImageIcon("Cartoon-Free-PNG-Image.png");
-	
+
 	public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e)
 	{
 		_type = t;

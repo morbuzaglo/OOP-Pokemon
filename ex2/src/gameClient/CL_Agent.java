@@ -18,6 +18,8 @@ public class CL_Agent implements Runnable
 		private int _id;
 		// private int key;
 
+		private double searchRadius;
+		private Point3D searchPoint = new Point3D(0,0);
 		private geo_location _pos;
 		private double _speed;
 		private edge_data _curr_edge;
@@ -183,7 +185,7 @@ public class CL_Agent implements Runnable
 				ddt = (long)(1000.0*dt);
 			}
 
-			this._sg_dt = _sg_dt;
+			this._sg_dt = ddt;
 		}
 
 	public long get_sg_dt()
@@ -241,28 +243,29 @@ public class CL_Agent implements Runnable
 	{
 		while(ar.getGame().isRunning()) // while game IsRunning
 		{
+			//Ex2.moveAgents(ar);
 			this._curr_fruit = null;
+			ar.updatePokemons(ar.getGame().getPokemons());
 
 			bestPok();
 
 			CL_Pokemon p  = this._curr_fruit;
-			ar.updatePokemons(ar.getGame().getPokemons());
 
 			if(p != null && p.get_edge() != null)
 			{
 				List<node_data> list = ar.getAlgo().shortestPath(getSrcNode(), p.get_edge().getSrc());
 				if(list == null) continue;
-				//System.out.println("SrcNode:" + getSrcNode());
+				System.out.println("agent " + getID() + " to edge: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 
 				Stack<Integer> st = new Stack<>();
 
-				System.out.print("Path of agent" + getID() + ": ");
+				//System.out.print("Path of agent" + getID() + ": ");
 				for(int i =  list.size()-1; i > 0; i--)
 				{
 					st.push(list.get(i).getKey());
-					System.out.print(list.get(i).getKey() + " ");
+					//System.out.print(list.get(i).getKey() + " ");
 				}
-				System.out.println();
+				//System.out.println();
 
 				boolean gotcha = false;
 				boolean almostCaught = false;
@@ -275,25 +278,47 @@ public class CL_Agent implements Runnable
 					{
 						//System.out.println("wait");
 						ar.updateAgents(ar.getGame().getAgents());
+//						try
+//						{
+//							Thread.sleep(get_sg_dt());
+//						}
+//						catch (InterruptedException e)
+//						{
+//							e.printStackTrace();
+//						}
+
+						//Ex2.moveAgents(ar);
 					}
 
-					ar.updatePokemons(ar.getGame().getPokemons());
+					try
+					{
+						ar.updatePokemons(ar.getGame().getPokemons());
+					}
+					catch (Exception e)
+					{
+					}
 
-					if(!st.isEmpty())
+					if(!stillExist())
+					{
+						//System.out.println("already caught!");
+						gotcha = true;
+						unAvailableEdges.remove(p.get_edge());
+					}
+					else if(!st.isEmpty())
 					{
 						int n = st.pop();
 						this.ar.getGame().chooseNextEdge(this._id, n);
 
 						//System.out.println("PULLED NODE: " + n);
 
-						try
-						{
-							Thread.sleep(get_sg_dt());
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
+//						try
+//						{
+//							Thread.sleep(get_sg_dt());
+//						}
+//						catch (InterruptedException e)
+//						{
+//							e.printStackTrace();
+//						}
 					}
 					else if(!almostCaught && getSrcNode() == p.get_edge().getSrc()) // path stack is empty
 					{
@@ -303,20 +328,25 @@ public class CL_Agent implements Runnable
 
 						almostCaught = true;
 
-						try
-						{
-							Thread.sleep(get_sg_dt());
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
+//						try
+//						{
+//							Thread.sleep(get_sg_dt());
+//						}
+//						catch (InterruptedException e)
+//						{
+//							e.printStackTrace();
+//						}
 					}
 					else if(almostCaught && getSrcNode() == p.get_edge().getDest())
 					{
 						gotcha = true;
-						unAvailableEdges.remove(p.get_edge()); // TODO unAvailablePoks doens't good! (pokemon always created as new).
+						unAvailableEdges.remove(p.get_edge());
 					}
+					else
+					{
+						break;
+					}
+
 					//System.out.println("almostCaught:" + almostCaught);
 					//System.out.println("gotcha:" + gotcha);
 					//System.out.println("nextNode:" + getNextNode());
@@ -324,6 +354,7 @@ public class CL_Agent implements Runnable
 					//System.out.println("pokDest:" + p.get_edge().getDest());
 					//System.out.println("srcNode:" + getSrcNode());
 					//System.out.println();
+					System.out.println("agent " + getID());
 				}
 			}
 		}
@@ -337,31 +368,82 @@ public class CL_Agent implements Runnable
 
 		dw_graph_algorithms ga = ar.getAlgo();
 
-		synchronized (ar.getPokemons())
+		synchronized(unAvailableEdges)
 		{
-
 			ar.updatePokemons(ar.getGame().getPokemons());
 			ar.updateAgents(ar.getGame().getAgents());
 
-			for (int i =0; i < ar.getPokemons().size(); i++)  // TODO change -> to בעיית המזכירה!
+			CL_Pokemon temp;
+
+			for (int i = 0; i < ar.getPokemons().size(); i++)
 			{
 				ar.updatePokemons(ar.getGame().getPokemons());
 				ar.updateAgents(ar.getGame().getAgents());
+				double d;
+				temp = ar.getPokemons().get(i);
 
-				if(!unAvailableEdges.contains(ar.getPokemons().get(i).get_edge()) )//&& ar.getPokemons().get(i).get_edge() != null)
+				if(!unAvailableEdges.contains(temp.get_edge()) && temp.get_edge() != null)
 				{
-					System.out.println(ar.getPokemons().get(i));
-					double d = ga.shortestPathDist(getSrcNode(), ar.getPokemons().get(i).get_edge().getSrc());
+					try
+					{
+						d = ga.shortestPathDist(getSrcNode(), temp.get_edge().getSrc());
+					}
+					catch (Exception e)
+					{
+						continue;
+					}
 
 					if(d < minDist && d != -1)
 					{
-						p = ar.getPokemons().get(i);
+						minDist = d;
+						p = temp;
 					}
 				}
 			}
+			//System.out.println("agent " + getID() + " best pok: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 
 			this._curr_fruit = p;
-			unAvailableEdges.add(p.get_edge());
+			if(p != null) unAvailableEdges.add(p.get_edge());
 		}
+	}
+
+	private boolean stillExist()
+	{
+		ar.updatePokemons(ar.getGame().getPokemons());
+		synchronized (ar.getGame())
+		{
+			return ar.getPoksEdges().contains(_curr_fruit.get_edge());
+		}
+	}
+
+	private boolean isInArea(CL_Pokemon pok)
+	{
+		if(pok.getLocation().distance(new GeoLoc(searchPoint)) < searchRadius)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public void setSearchRadius(double R)
+	{
+		this.searchRadius = R;
+	}
+
+	public double getSearchRadius()
+	{
+		return this.searchRadius;
+	}
+
+	public void setSearchPoint(Point3D p)
+	{
+		this.searchPoint = p;
+	}
+	public Point3D getSearchPoint()
+	{
+		return this.searchPoint;
 	}
 }
