@@ -10,8 +10,6 @@ import gameClient.util.Range2D;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +59,7 @@ public class MyFrame extends JFrame
 		// "Switch" the old "canvas" for the new one
 
 		g.drawImage(buffer_image, 0, 0, this);
-
+		this.setBounds(300,50,w,h);
 	}
 
 	@Override
@@ -136,8 +134,6 @@ public class MyFrame extends JFrame
 
 					geo_location fp = this._w2f.world2frame(c);
 					g.drawImage(f.get_image().getImage(),(int)fp.x()-r, (int)fp.y()-r,f.get_image().getImageObserver());
-					//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
-					//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 
 				}
 			}
@@ -146,17 +142,15 @@ public class MyFrame extends JFrame
 	private void drawAgants(Graphics g)
 	{
 		List<CL_Agent> rs = _ar.getAgents();
-		//	Iterator<OOP_Point3D> itr = rs.iterator();
 		g.setColor(Color.red);
 		int i=0;
 		while(rs!=null && i<rs.size())
 		{
 			geo_location c = rs.get(i).getLocation();
 			int r=8;
-			if(c!=null) {
-
+			if(c!=null)
+			{
 				geo_location fp = this._w2f.world2frame(c);
-				//g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
 				g.drawImage(rs.get(i).get_image().getImage(), (int) fp.x() - r, (int) fp.y() - r, rs.get(i).get_image().getImageObserver());
 				g.drawString(""+rs.get(i).getID(), (int) fp.x() - r, (int) fp.y() - r);
 			}
@@ -180,6 +174,5 @@ public class MyFrame extends JFrame
 		geo_location s0 = this._w2f.world2frame(s);
 		geo_location d0 = this._w2f.world2frame(d);
 		g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
-		//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 	}
 }

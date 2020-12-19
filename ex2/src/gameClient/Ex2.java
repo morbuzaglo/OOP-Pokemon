@@ -5,7 +5,6 @@ import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.plaf.TableHeaderUI;
 import java.util.List;
 import java.util.Random;
 
@@ -18,19 +17,19 @@ public class Ex2 implements Runnable
     private game_service _game;
     private Arena _ar;
     public double LastMove;
-    private static GUI gui;
+    private static GUI gui1;
     public static boolean isRunning;
 
     public static void main(String[] a)
     {
-        GUI _gui = new GUI();
-        gui = _gui;
+        GUI _gui1 = new GUI();
+        gui1 = _gui1;
 
         int ind = 0;
 
-        while(!gui.getStartGame())
+        while(!gui1.getStartGame())
         {
-            System.out.println(gui.getStartGame());
+          System.out.println("");
         }
         Thread client = new Thread(new Ex2());
         client.start();
@@ -39,10 +38,10 @@ public class Ex2 implements Runnable
     @Override
     public void run()
     {
-        int scenario_num = gui.get_level();
+        int scenario_num = gui1.get_level();
         game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-        int id = gui.get_id();
-        //game.login(id);
+        int id = gui1.get_id();
+        game.login(id);
 
         this._game = game;
         init(); // arena settings, placing agents and pokemons.
