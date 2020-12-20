@@ -16,8 +16,6 @@ public class CL_Agent implements Runnable
 	private static int _seed = 3331;
 
 	private int _id;
-	// private int key;
-
 	private double searchRadius;
 	private Point3D searchPoint = new Point3D(0,0);
 	private geo_location _pos;
@@ -30,10 +28,12 @@ public class CL_Agent implements Runnable
 	private double _value;
 	private Arena ar;
 	private ImageIcon agent = new ImageIcon("data\\agent1.png");
-
 	public static int count = 0;
 	public static ArrayList<edge_data> unAvailableEdges = new ArrayList<>();
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public CL_Agent(Arena ar, int start_node)
 	{
 		this.ar = ar;
@@ -44,25 +44,36 @@ public class CL_Agent implements Runnable
 		_id = -1;
 		setSpeed(0);
 	}
-
-
+	/**
+	 *sets id for agent
+	 *
+	 */
 	public void setID(int id)
 	{
 		this._id = id;
 	}
-
+	/**
+	 *sets location
+	 *
+	 */
 	public void setLocation(geo_location p)
 	{
 		this._pos = p;
 	}
-
-	//@Override
+	/**
+	 * returns src node
+	 * @return source node
+	 */
 	public int getSrcNode()
 	{
 		return this._curr_node.getKey();
 	}
-
-	public String toJSON() {
+	/**
+	 *converts agent data to string
+	 * @return string
+	 */
+	public String toJSON() // converts agent data to string
+	{
 		int d = this.getNextNode();
 		String ans = "{\"Agent\":{"
 				+ "\"id\":"+this._id+","
@@ -75,18 +86,23 @@ public class CL_Agent implements Runnable
 				+ "}";
 		return ans;
 	}
-
-	private void setMoney(double v)
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
+	private void setMoney(double v)// sets money
 	{
 		_value = v;
 	}
-
-	public boolean setNextNode(int dest)
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
+	public boolean setNextNode(int dest)//sets next node for each agents
 	{
 		boolean ans = false;
 		int src = this._curr_node.getKey();
 		this._curr_edge = _graph.getEdge(src, dest);
-
 		if(_curr_edge != null)
 		{
 			ans = true;
@@ -97,38 +113,59 @@ public class CL_Agent implements Runnable
 		}
 		return ans;
 	}
-
-	public void setCurrNode(int src)
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
+	public void setCurrNode(int src)//sets current node for each node
 	{
 		this._curr_node = _graph.getNode(src);
 	}
-
-	public boolean isMoving()
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
+	public boolean isMoving()// check if agent is moving
 	{
 		return (this._curr_edge != null);
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public String toString()
 	{
 		String ans = "" + this.getID() + "," + _pos+", " + isMoving() + "," + this.getValue();
 		return ans;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public int getID()
 	{
 		return this._id;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public geo_location getLocation()
 	{
 		return _pos;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public double getValue()
 	{
 		return this._value;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public int getNextNode()
 	{
 		int ans = -2;
@@ -142,27 +179,43 @@ public class CL_Agent implements Runnable
 		}
 		return ans;
 	}
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 
 	public double getSpeed()
 	{
 		return this._speed;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void setSpeed(double v)
 	{
 		this._speed = v;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public CL_Pokemon get_curr_fruit()
 	{
 		return _curr_fruit;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void set_curr_fruit(CL_Pokemon curr_fruit)
 	{
 		this._curr_fruit = curr_fruit;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void set_SDT(long ddtt) // TODO is correct???
 	{
 		long ddt = ddtt;
@@ -195,19 +248,28 @@ public class CL_Agent implements Runnable
 
 		this._sg_dt = ddt;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public long get_sg_dt()
 	{
 		set_SDT(100);
 		return _sg_dt;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public edge_data get_curr_edge()
 	{
 		return this._curr_edge;
 	}
 
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void update(String json)
 	{
 		JSONObject line;
@@ -240,12 +302,18 @@ public class CL_Agent implements Runnable
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public ImageIcon get_image()
 	{
 		return agent;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	@Override
 	public void run()
 	{
@@ -372,7 +440,10 @@ public class CL_Agent implements Runnable
 			}
 		}
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	synchronized private void bestPok()
 	{
 		CL_Pokemon p = null;
@@ -425,7 +496,10 @@ public class CL_Agent implements Runnable
 		this._curr_fruit = p;
 		if(p != null) unAvailableEdges.add(p.get_edge());
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	private boolean stillExist()
 	{
 		ar.updatePokemons(ar.getGame().getPokemons());
@@ -434,7 +508,10 @@ public class CL_Agent implements Runnable
 			return ar.getPoksEdges().contains(_curr_fruit.get_edge());
 		}
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	private boolean isInArea(CL_Pokemon pok)
 	{
 		if(pok.getLocation().distance(new GeoLoc(searchPoint)) < searchRadius)
@@ -446,21 +523,34 @@ public class CL_Agent implements Runnable
 			return false;
 		}
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void setSearchRadius(double R)
 	{
 		this.searchRadius = R;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public double getSearchRadius()
 	{
 		return this.searchRadius;
 	}
-
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public void setSearchPoint(Point3D p)
 	{
 		this.searchPoint = p;
 	}
+	/**
+	 *constructor of agent using arena and starting node to place him
+	 *
+	 */
 	public Point3D getSearchPoint()
 	{
 		return this.searchPoint;

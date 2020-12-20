@@ -1,5 +1,5 @@
 package gameClient;
-
+import gameClient.MyFrame;
 import Server.Game_Server_Ex2;
 import api.game_service;
 import org.json.JSONException;
@@ -7,27 +7,53 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Random;
-public class Ex2 implements Runnable
-{
-    private int scenario_num = 11;
-    private int ID = 318670403;
-    private  MyFrame _win;
+public class Ex2 implements Runnable {
+    private static int scenario_num = 11;
+    private static int ID = 318670403;
+    private MyFrame _win;
     private game_service _game;
     private Arena _ar;
     public double LastMove;
     private static GUI gui1;
     public static boolean isRunning;
+    public static boolean cmd=false;
 
-    public static void main(String[] a)
-    {
-        GUI _gui1 = new GUI();
-        gui1 = _gui1;
-
-        int ind = 0;
-
-        while(!gui1.getStartGame())
+    public static void main(String[] a) {
+        for(String b:a)
         {
-          System.out.println("");
+            System.out.println(b);
+        }
+        if(a.length==0)
+        {
+
+            cmd=false;
+            GUI _gui1 = new GUI();
+            gui1 = _gui1;
+
+            int ind = 0;
+
+            while (!gui1.getStartGame())
+            {
+                System.out.println("");
+            }
+        }
+        else
+        {
+            cmd=true;
+            try
+            {
+                ID = Integer.parseInt(a[0]);
+                scenario_num=Integer.parseInt(a[1]);
+                game_service game = Game_Server_Ex2.getServer(scenario_num);
+
+            }
+
+            catch(Exception e)
+            {
+            System.err.println("wrong id or level running default id=318670403 and level 11 ");
+            scenario_num = 11;
+            ID = 318670403;
+            }
         }
         Thread client = new Thread(new Ex2());
         client.start();
@@ -36,42 +62,48 @@ public class Ex2 implements Runnable
     @Override
     public void run()
     {
-        while(!gui1.getStartGame())
+
+        if(!cmd)
         {
-            System.out.println("");
-        }
-        int scenario_num = gui1.get_level();
-        game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-        int id = gui1.get_id();
-        try
-        {
-            game.login(id);
-        }
-        catch(NullPointerException e)
-        {
-            GUI _gui2 = new GUI();
-            GUI warning=gui1.warning("wrong level please start game again ");
-            gui1=_gui2;
-            try {
-                Thread.sleep(4000);
-                warning.frame.dispose(); }
-            catch (InterruptedException interruptedException)
+            while (!gui1.getStartGame()||cmd)
             {
-                interruptedException.printStackTrace();
+                System.out.println("");
             }
+            int scenario_num = gui1.get_level();
+            this.scenario_num = scenario_num;
+            game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
+            int id = gui1.get_id();
+            try {
+                game.login(id);
+            } catch (NullPointerException e) {
+                GUI _gui2 = new GUI();
+                GUI warning = gui1.warning("wrong level please start game again ");
+                gui1 = _gui2;
+                try {
+                    Thread.sleep(4000);
+                    warning.frame.dispose();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
 
 
-            run();
+                run();
+
+            }
+            this._game = game;
+        }
+        else
+        {
+            game_service game = Game_Server_Ex2.getServer(scenario_num);
+            game.login(ID);
+            this._game = game;
 
         }
-
-        this._game = game;
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.
     }
 
-    private void init()
-    {
+    private void init() {
         Arena ar = new Arena(this._game);
         this._ar = ar;
 
@@ -84,8 +116,7 @@ public class Ex2 implements Runnable
         AgentsFirstSet();
     }
 
-    private void playing()
-    {
+    private void playing() {
         _game.startGame();
         _win.setTitle("Ex2 Pokemon Game - scenario: " + this.scenario_num);
         int ind = 0;
@@ -95,25 +126,23 @@ public class Ex2 implements Runnable
 
         moveAgents(this._ar);
 
-        for(int i = 0; i < _ar.getAgents().size(); i++)
-        {
-            Thread th = new Thread( _ar.getAgents().get(i));
+        for (int i = 0; i < _ar.getAgents().size(); i++) {
+            Thread th = new Thread(_ar.getAgents().get(i));
             th.start();
         }
 
+
         long minTime = Long.MAX_VALUE;
         long temp;
-        while(_game.isRunning())
-        {
+
+        while (_game.isRunning()) {
             moveAgents(_ar);
 
-            for(int i = 0; i < _ar.getAgents().size(); i++)
-            {
+            for (int i = 0; i < _ar.getAgents().size(); i++) {
                 temp = _ar.getAgents().get(i).get_sg_dt();
-                if(i == 0) minTime = temp;
+                if (i == 0) minTime = temp;
 
-                if(temp < minTime)
-                {
+                if (temp < minTime) {
                     minTime = temp;
                 }
             }
@@ -121,27 +150,25 @@ public class Ex2 implements Runnable
             System.out.println(minTime);
             System.out.println("----------------------------------------------");
 
-            try
-            {
-                if(ind%1 == 0)
-                {
+            try {
+                if (ind % 1 == 0) {
                     _win.repaint();
                 }
                 //Thread.sleep((100 < minTime) ? minTime : 100);
-                Thread.sleep(10);
+                Thread.sleep(100);
                 ind++;
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
 
-        String res = _game.toString();
+    }
+
+
+    String res = _game.toString();
 
         System.out.println(res);
         System.exit(0);
-    }
+}
 
              /* * * * * * * * * * * * * * * DECISION FUNCTIONS * * * * * * * * * * * * * * * * * * */
 
