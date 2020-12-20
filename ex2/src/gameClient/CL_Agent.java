@@ -72,7 +72,7 @@ public class CL_Agent implements Runnable
 	 *converts agent data to string
 	 * @return string
 	 */
-	public String toJSON() // converts agent data to string
+	public String toJSON()
 	{
 		int d = this.getNextNode();
 		String ans = "{\"Agent\":{"
@@ -87,18 +87,19 @@ public class CL_Agent implements Runnable
 		return ans;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets money
 	 *
 	 */
-	private void setMoney(double v)// sets money
+	private void setMoney(double v)
 	{
 		_value = v;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets next node for each agents
+	 * @return boolean
 	 *
 	 */
-	public boolean setNextNode(int dest)//sets next node for each agents
+	public boolean setNextNode(int dest)
 	{
 		boolean ans = false;
 		int src = this._curr_node.getKey();
@@ -114,23 +115,23 @@ public class CL_Agent implements Runnable
 		return ans;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets current node for each node
 	 *
 	 */
-	public void setCurrNode(int src)//sets current node for each node
+	public void setCurrNode(int src)
 	{
 		this._curr_node = _graph.getNode(src);
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *check if agent is moving
+	 * @return boolean
 	 */
-	public boolean isMoving()// check if agent is moving
+	public boolean isMoving()
 	{
 		return (this._curr_edge != null);
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 * @ returns string of info
 	 *
 	 */
 	public String toString()
@@ -139,7 +140,8 @@ public class CL_Agent implements Runnable
 		return ans;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 * @return int
+	 * return id of agent
 	 *
 	 */
 	public int getID()
@@ -147,7 +149,8 @@ public class CL_Agent implements Runnable
 		return this._id;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 * @geo_location
+	 * gets location of agent
 	 *
 	 */
 	public geo_location getLocation()
@@ -155,16 +158,16 @@ public class CL_Agent implements Runnable
 		return _pos;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 * @return value
+	 *returns value of agent
 	 */
 	public double getValue()
 	{
 		return this._value;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *gets the next node
+	 * @returns int
 	 */
 	public int getNextNode()
 	{
@@ -180,16 +183,16 @@ public class CL_Agent implements Runnable
 		return ans;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *returns speed of agent
+	 * @return speed
 	 *
 	 */
-
 	public double getSpeed()
 	{
 		return this._speed;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets speed
 	 *
 	 */
 	public void setSpeed(double v)
@@ -197,15 +200,15 @@ public class CL_Agent implements Runnable
 		this._speed = v;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *returns current agent's target
+	 * @reurn pokemon
 	 */
 	public CL_Pokemon get_curr_fruit()
 	{
 		return _curr_fruit;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets agent's next target
 	 *
 	 */
 	public void set_curr_fruit(CL_Pokemon curr_fruit)
