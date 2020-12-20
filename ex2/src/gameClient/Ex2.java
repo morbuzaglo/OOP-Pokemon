@@ -1,10 +1,8 @@
 package gameClient;
-import gameClient.MyFrame;
 import Server.Game_Server_Ex2;
 import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.List;
 import java.util.Random;
 public class Ex2 implements Runnable {
@@ -17,21 +15,18 @@ public class Ex2 implements Runnable {
     private static GUI gui1;
     public static boolean isRunning;
     public static boolean cmd=false;
-
-    public static void main(String[] a) {
+    public static void main(String[] a)
+    {
         for(String b:a)
         {
             System.out.println(b);
         }
         if(a.length==0)
         {
-
             cmd=false;
             GUI _gui1 = new GUI();
             gui1 = _gui1;
-
             int ind = 0;
-
             while (!gui1.getStartGame())
             {
                 System.out.println("");
@@ -62,7 +57,6 @@ public class Ex2 implements Runnable {
     @Override
     public void run()
     {
-
         if(!cmd)
         {
             while (!gui1.getStartGame()||cmd)
@@ -85,10 +79,7 @@ public class Ex2 implements Runnable {
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 }
-
-
                 run();
-
             }
             this._game = game;
         }
@@ -97,7 +88,6 @@ public class Ex2 implements Runnable {
             game_service game = Game_Server_Ex2.getServer(scenario_num);
             game.login(ID);
             this._game = game;
-
         }
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.

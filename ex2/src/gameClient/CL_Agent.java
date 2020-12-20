@@ -14,7 +14,6 @@ public class CL_Agent implements Runnable
 	public static final double EPS = 0.0001;
 	private static int _count = 0;
 	private static int _seed = 3331;
-
 	private int _id;
 	private double searchRadius;
 	private Point3D searchPoint = new Point3D(0,0);
@@ -216,7 +215,7 @@ public class CL_Agent implements Runnable
 		this._curr_fruit = curr_fruit;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets sleep ti,e for agent
 	 *
 	 */
 	public void set_SDT(long ddtt) // TODO is correct???
@@ -252,8 +251,8 @@ public class CL_Agent implements Runnable
 		this._sg_dt = ddt;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *gets sleep time for agent
+	 * @return sleep time
 	 */
 	public long get_sg_dt()
 	{
@@ -261,8 +260,8 @@ public class CL_Agent implements Runnable
 		return _sg_dt;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *gets current edge agent is on
+	 * @return edge
 	 */
 	public edge_data get_curr_edge()
 	{
@@ -270,7 +269,7 @@ public class CL_Agent implements Runnable
 	}
 
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *updates agent traits using json
 	 *
 	 */
 	public void update(String json)
@@ -306,7 +305,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *gets image for agent
 	 *
 	 */
 	public ImageIcon get_image()
@@ -314,7 +313,7 @@ public class CL_Agent implements Runnable
 		return agent;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *run for agents thread
 	 *
 	 */
 	@Override
@@ -444,7 +443,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *choose best poke for this agent and its syncronized
 	 *
 	 */
 	synchronized private void bestPok()
@@ -500,8 +499,8 @@ public class CL_Agent implements Runnable
 		if(p != null) unAvailableEdges.add(p.get_edge());
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *checck if current fruit is in the arena
+	 * @returns boolean
 	 */
 	private boolean stillExist()
 	{
@@ -512,7 +511,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 * unused function to check if poki is in arena
 	 *
 	 */
 	private boolean isInArea(CL_Pokemon pok)
@@ -527,7 +526,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets search radius
 	 *
 	 */
 	public void setSearchRadius(double R)
@@ -535,15 +534,15 @@ public class CL_Agent implements Runnable
 		this.searchRadius = R;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
-	 *
+	 *returns search radius
+	 * @return search radius
 	 */
 	public double getSearchRadius()
 	{
 		return this.searchRadius;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *sets search point
 	 *
 	 */
 	public void setSearchPoint(Point3D p)
@@ -551,7 +550,7 @@ public class CL_Agent implements Runnable
 		this.searchPoint = p;
 	}
 	/**
-	 *constructor of agent using arena and starting node to place him
+	 *gets 3d point
 	 *
 	 */
 	public Point3D getSearchPoint()

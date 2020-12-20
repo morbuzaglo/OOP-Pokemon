@@ -25,17 +25,22 @@ public class Arena
 	private List<CL_Pokemon> _pokemons;
 	private List<String> _info;
 	private dw_graph_algorithms ga;
-
 	private static Point3D MIN = new Point3D(0, 100,0);
 	private static Point3D MAX = new Point3D(0, 100,0);
 	private ArrayList<edge_data> PoksEdges = new ArrayList<>();
-
+	/**
+	 *defult constructor of arena
+	 *
+	 */
 	public Arena()
 	{
 		this._info = new ArrayList<String>();
 		this.game = game;
 	}
-
+	/**
+	 *main constructor using game service
+	 *
+	 */
 	public Arena(game_service game)
 	{
 		this.game = game;
@@ -43,85 +48,125 @@ public class Arena
 
 		init();
 	}
-
+	/**
+	 *returns array list of all pokemons
+	 *
+	 */
 	public ArrayList<edge_data> getPoksEdges()
 	{
 		return this.PoksEdges;
 	}
-
+	/**
+	 *sets pokemon list
+	 *
+	 */
 	public void setPokemons(List<CL_Pokemon> f)
 	{
 		this._pokemons = f;
 	}
-
+	/**
+	 *sets agebts list
+	 *
+	 */
 	public void setAgents(List<CL_Agent> f)
 	{
 		this._agents = f;
 	}
-
+	/**
+	 *sets graph
+	 *
+	 */
 	public void setGraph(directed_weighted_graph g)
 	{
 		this._graph = g;
 		init();
 	}
-
+	/**
+	 *inits arens with all traits
+	 *
+	 */
 	private void init()
 	{
 		String gStr = game.getGraph();
 		String pStr = game.getPokemons();
-
 		directed_weighted_graph g = new DWGraph_DS();
 		dw_graph_algorithms ga = new DWGraph_Algo();
 		this.ga = ga;
 		ga.init(g);
-
 		String fileName = "JsonGraph.json";
 		CreateFile(fileName, gStr);
 		ga.load(fileName);
 		this._graph = ga.getGraph();
-
 		updatePokemons(pStr);
 		updateWinSize();
 	}
-
+	/**
+	 *returns a list of all agents
+	 * @returns list
+	 */
 	public List<CL_Agent> getAgents()  // HAVE TO UPDATE FIRST!
 	{
 		return _agents;
 	}
-
+	/**
+	 *returns a list of all pokemons
+	  *@returns list
+	 *
+	 */
 	public List<CL_Pokemon> getPokemons()
 	{
 		return _pokemons;
 	}  // HAVE TO UPDATE FIRST!
-
+	/**
+	 *returns graph
+	 * @returns graph
+	 *
+	 */
 	public directed_weighted_graph getGraph()
 	{
 		return _graph;
 	}
-
+	/**
+	 *
+	 *returns a list of all infos
+	 *@returns list
+	 */
 	public List<String> get_info()
 	{
 		return _info;
 	}
-
+	/**
+	 *sets info list
+	 *
+	 */
 	public void set_info(List<String> _info)
 	{
 		this._info = _info;
 	}
-
+	/**
+	 *returns game
+	 *@returns game_service
+	 *
+	 */
 	public game_service getGame()
 	{
 		return this.game;
 	}
-
+	/**
+	 *returns the graph algo
+	 *@returns graph_algo
+	 *
+	 */
 	public dw_graph_algorithms getAlgo()
 	{
 		return this.ga;
 	}
 
-
 	/* * * * * * * * * * * * * * * * * *  UPDATE FUNCTIONS * * * * * * * * * * * * * * * * * * * * * * */
-
+	/**
+	 *
+	 *updates window size
+	 */
 	public void updateWinSize()
 	{
 
@@ -165,7 +210,10 @@ public class Arena
 		MIN = new Point3D(x0 - dx/10,y0 - dy/10);
 		MAX = new Point3D(x1 + dx/10,y1 + dy/10);
 	}
-
+	/**
+	 *
+	 *adding new agents
+	 */
 	public void addNewAgents(String AgentsData)
 	{
 		ArrayList<CL_Agent> ans = new ArrayList<>();
@@ -228,7 +276,10 @@ public class Arena
 			}
 		}
 	}
-
+	/**
+	 *
+	 *updates agents using string from game_service
+	 */
 	public void updateAgents(String currAgentsData) // the string
 	{
 		try
@@ -245,7 +296,10 @@ public class Arena
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 *updates pokemon status in arena using string from game_service
+	 *
+	 */
 	public void updatePokemons(String fs)
 	{
 		try
@@ -297,7 +351,10 @@ public class Arena
 			return;
 		}
 	}
-
+	/**
+	 *updates edges on arena
+	 *
+	 */
 	public void updateEdge(CL_Pokemon fr, directed_weighted_graph g)
 	{
 		//	oop_edge_data ans = null;
@@ -317,7 +374,10 @@ public class Arena
 			}
 		}
 	}
-
+	/**
+	 *check if pkimon is on edge
+	 * @retuns boolean
+	 */
 	private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest )
 	{
 		boolean ans = false;
@@ -326,14 +386,20 @@ public class Arena
 		if(dist>d1-EPS2) {ans = true;}
 		return ans;
 	}
-
+	/**
+	 *check if pkimon is on edge
+	 * @retuns boolean
+	 */
 	private static boolean isOnEdge(geo_location p, int s, int d, directed_weighted_graph g)
 	{
 		geo_location src = g.getNode(s).getLocation();
 		geo_location dest = g.getNode(d).getLocation();
 		return isOnEdge(p,src,dest);
 	}
-
+	/**
+	 *check if pkimon is on edge
+	 * @retuns boolean
+	 */
 	private static boolean isOnEdge(geo_location p, edge_data e, int type, directed_weighted_graph g)
 	{
 		int src = g.getNode(e.getSrc()).getKey();
@@ -342,7 +408,10 @@ public class Arena
 		if(type>0 && src>dest) {return false;}
 		return isOnEdge(p,src, dest, g);
 	}
-
+	/**
+	 *returns range2D of window
+	 *
+	 */
 	private static Range2D GraphRange(directed_weighted_graph g)
 	{
 		Iterator<node_data> itr = g.getV().iterator();
@@ -368,14 +437,20 @@ public class Arena
 		Range yr = new Range(y0,y1);
 		return new Range2D(xr,yr);
 	}
-
+	/**
+	 *
+	 *returns range2Range of window
+	 */
 	public static Range2Range w2f(directed_weighted_graph g, Range2D frame)
 	{
 		Range2D world = GraphRange(g);
 		Range2Range ans = new Range2Range(world, frame);
 		return ans;
 	}
-
+	/**
+	 *
+	 *creates file
+	 */
 	public void CreateFile(String name, String g)
 	{
 		try
