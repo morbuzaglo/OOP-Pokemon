@@ -7,8 +7,11 @@ import api.node_data;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
@@ -68,16 +71,16 @@ public class MyFrame extends JFrame
 		int w = this.getWidth();
 		int h = this.getHeight();
 		g.clearRect(0, 0, w, h);
-		ImageIcon background =new ImageIcon("background1.png");
+		ImageIcon background =new ImageIcon("data\\background1.png");
 		BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics2D = resizedImage.createGraphics();
 		graphics2D.drawImage(background.getImage(), 0, 0, w, h, null);
 		graphics2D.dispose();
 		g.drawImage(resizedImage,0,0,background.getImageObserver());
 		updateFrame();
-		drawPokemons(g);
 		drawGraph(g);
 		drawAgants(g);
+		drawPokemons(g);
 		drawInfo(g);
 	}
 
@@ -95,20 +98,72 @@ public class MyFrame extends JFrame
 	private void drawGraph(Graphics g)
 	{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setBounds(this.getWidth()/2-120, 10, 300, 50);
+		panel_2.setLayout(null);
+		JLabel timeleft = new JLabel("  Time left to end the game : "+_ar.getGame().timeToEnd()/1000.0);
+		timeleft.setFont(new Font("TimesRoman", Font.PLAIN, 16));
+		timeleft.setForeground(Color.red);
+		this.add(timeleft);
+		timeleft.setBounds(6, 0, 300, 50);
+		panel_2.add(timeleft);
+		this.add(panel_2);
+		double sum=0;
+		for(int i=0;i<_ar.getAgents().size();i++)
+		{
+			sum=sum+_ar.getAgents().get(i).getValue();
+
+		}
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(this.getWidth()/2-65, 80, 200, 50);
+		panel_1.setLayout(null);
+		JLabel score = new JLabel("  current score is  : "+sum);
+		score.setFont(new Font("TimesRoman", Font.PLAIN, 16));
+		score.setForeground(Color.black);
+		this.add(score);
+		score.setBounds(6, 0, 200, 50);
+		panel_1.add(score);
+		this.add(panel_1);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(this.getWidth()/2-65, 150, 200, 50);
+		panel_3.setLayout(null);
+		String s="";
+		try {
+			JSONObject game =new JSONObject(_ar.getGame().toString());
+			s=game.getJSONObject("GameServer").getInt("moves")+"";
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		JLabel moves = new JLabel("  current moves are  : "+s);
+		moves.setFont(new Font("TimesRoman", Font.PLAIN, 16));
+		moves.setForeground(Color.black);
+		this.add(moves);
+		moves.setBounds(6, 0, 200, 50);
+		panel_3.add(moves);
+		this.add(panel_3);
 		directed_weighted_graph gg = _ar.getGraph();
 		Iterator<node_data> iter = gg.getV().iterator();
 		while(iter.hasNext())
 		{
 			node_data n = iter.next();
-			g.setColor(Color.blue);
-			drawNode(n,5,g);
 			Iterator<edge_data> itr = gg.getE(n.getKey()).iterator();
 			while(itr.hasNext())
 			{
 				edge_data e = itr.next();
-				g.setColor(Color.gray);
+				g.setColor(Color.black);
 				drawEdge(e, g);
+				g.setColor(Color.blue);
 			}
+		}
+		iter = gg.getV().iterator();
+		while(iter.hasNext())
+		{
+			node_data n = iter.next();
+			drawNode(n,5,g);
 		}
 	}
 	private void drawPokemons(Graphics g)
@@ -133,7 +188,7 @@ public class MyFrame extends JFrame
 				{
 
 					geo_location fp = this._w2f.world2frame(c);
-					g.drawImage(f.get_image().getImage(),(int)fp.x()-r, (int)fp.y()-r,f.get_image().getImageObserver());
+					g.drawImage(f.get_image().getImage(),(int)fp.x()-25, (int)fp.y()-25,f.get_image().getImageObserver());
 
 				}
 			}
@@ -150,9 +205,10 @@ public class MyFrame extends JFrame
 			int r=8;
 			if(c!=null)
 			{
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 28));
 				geo_location fp = this._w2f.world2frame(c);
 				g.drawImage(rs.get(i).get_image().getImage(), (int) fp.x() - r, (int) fp.y() - r, rs.get(i).get_image().getImageObserver());
-				g.drawString(""+rs.get(i).getID(), (int) fp.x() - r, (int) fp.y() - r);
+				g.drawString(""+rs.get(i).getID(), (int) fp.x() - 39/2, (int) fp.y() - 13/2);
 			}
 
 			i++;
@@ -161,9 +217,11 @@ public class MyFrame extends JFrame
 
 	private void drawNode(node_data n, int r, Graphics g)
 	{
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 28));
 		geo_location pos = n.getLocation();
 		geo_location fp = this._w2f.world2frame(pos);
-		g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
+		ImageIcon poky = new ImageIcon("data\\poki_resized.png");
+		g.drawImage(poky.getImage(),(int)fp.x()-15, (int)fp.y()-15,poky.getImageObserver());
 		g.drawString(""+n.getKey(), (int)fp.x(), (int)fp.y()-4*r);
 	}
 	private void drawEdge(edge_data e, Graphics g)
@@ -173,6 +231,7 @@ public class MyFrame extends JFrame
 		geo_location d = gg.getNode(e.getDest()).getLocation();
 		geo_location s0 = this._w2f.world2frame(s);
 		geo_location d0 = this._w2f.world2frame(d);
+		((Graphics2D)g).setStroke(new BasicStroke(5));
 		g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
 	}
 }

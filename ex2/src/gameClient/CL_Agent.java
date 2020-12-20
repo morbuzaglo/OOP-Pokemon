@@ -11,161 +11,163 @@ import java.util.Stack;
 
 public class CL_Agent implements Runnable
 {
-		public static final double EPS = 0.0001;
-		private static int _count = 0;
-		private static int _seed = 3331;
+	public static final double EPS = 0.0001;
+	private static int _count = 0;
+	private static int _seed = 3331;
 
-		private int _id;
-		// private int key;
+	private int _id;
+	// private int key;
 
-		private double searchRadius;
-		private Point3D searchPoint = new Point3D(0,0);
-		private geo_location _pos;
-		private double _speed;
-		private edge_data _curr_edge;
-		private node_data _curr_node;
-		private directed_weighted_graph _graph;
-		private CL_Pokemon _curr_fruit;
-		private long _sg_dt;
-		private double _value;
-		private Arena ar;
-		private ImageIcon agent = new ImageIcon("agent1.png");
+	private double searchRadius;
+	private Point3D searchPoint = new Point3D(0,0);
+	private geo_location _pos;
+	private double _speed;
+	private edge_data _curr_edge;
+	private node_data _curr_node;
+	private directed_weighted_graph _graph;
+	private CL_Pokemon _curr_fruit;
+	private long _sg_dt;
+	private double _value;
+	private Arena ar;
+	private ImageIcon agent = new ImageIcon("data\\agent1.png");
 
-		public static int count = 0;
-		public static ArrayList<edge_data> unAvailableEdges = new ArrayList<>();
+	public static int count = 0;
+	public static ArrayList<edge_data> unAvailableEdges = new ArrayList<>();
 
-		public CL_Agent(Arena ar, int start_node)
+	public CL_Agent(Arena ar, int start_node)
+	{
+		this.ar = ar;
+		_graph = ar.getGraph();
+		setMoney(0);
+		this._curr_node = _graph.getNode(start_node);
+		_pos = _curr_node.getLocation();
+		_id = -1;
+		setSpeed(0);
+	}
+
+
+	public void setID(int id)
+	{
+		this._id = id;
+	}
+
+	public void setLocation(geo_location p)
+	{
+		this._pos = p;
+	}
+
+	//@Override
+	public int getSrcNode()
+	{
+		return this._curr_node.getKey();
+	}
+
+	public String toJSON() {
+		int d = this.getNextNode();
+		String ans = "{\"Agent\":{"
+				+ "\"id\":"+this._id+","
+				+ "\"value\":"+this._value+","
+				+ "\"src\":"+this._curr_node.getKey()+","
+				+ "\"dest\":"+d+","
+				+ "\"speed\":"+this.getSpeed()+","
+				+ "\"pos\":\""+_pos.toString()+"\""
+				+ "}"
+				+ "}";
+		return ans;
+	}
+
+	private void setMoney(double v)
+	{
+		_value = v;
+	}
+
+	public boolean setNextNode(int dest)
+	{
+		boolean ans = false;
+		int src = this._curr_node.getKey();
+		this._curr_edge = _graph.getEdge(src, dest);
+
+		if(_curr_edge != null)
 		{
-			this.ar = ar;
-			_graph = ar.getGraph();
-			setMoney(0);
-			this._curr_node = _graph.getNode(start_node);
-			_pos = _curr_node.getLocation();
-			_id = -1;
-			setSpeed(0);
+			ans = true;
 		}
-
-
-		public void setID(int id)
+		else
 		{
-			this._id = id;
+			_curr_edge = null;
 		}
+		return ans;
+	}
 
-		public void setLocation(geo_location p)
-		{
-			this._pos = p;
-		}
+	public void setCurrNode(int src)
+	{
+		this._curr_node = _graph.getNode(src);
+	}
 
-		//@Override
-		public int getSrcNode()
-		{
-			return this._curr_node.getKey();
-		}
+	public boolean isMoving()
+	{
+		return (this._curr_edge != null);
+	}
 
-		public String toJSON() {
-			int d = this.getNextNode();
-			String ans = "{\"Agent\":{"
-					+ "\"id\":"+this._id+","
-					+ "\"value\":"+this._value+","
-					+ "\"src\":"+this._curr_node.getKey()+","
-					+ "\"dest\":"+d+","
-					+ "\"speed\":"+this.getSpeed()+","
-					+ "\"pos\":\""+_pos.toString()+"\""
-					+ "}"
-					+ "}";
-			return ans;	
-		}
+	public String toString()
+	{
+		String ans = "" + this.getID() + "," + _pos+", " + isMoving() + "," + this.getValue();
+		return ans;
+	}
 
-		private void setMoney(double v)
-		{
-			_value = v;
-		}
-	
-		public boolean setNextNode(int dest)
-		{
-			boolean ans = false;
-			int src = this._curr_node.getKey();
-			this._curr_edge = _graph.getEdge(src, dest);
+	public int getID()
+	{
+		return this._id;
+	}
 
-			if(_curr_edge != null)
-			{
-				ans = true;
-			}
-			else
-			{
-				_curr_edge = null;
-			}
-			return ans;
-		}
+	public geo_location getLocation()
+	{
+		return _pos;
+	}
 
-		public void setCurrNode(int src)
-		{
-			this._curr_node = _graph.getNode(src);
-		}
+	public double getValue()
+	{
+		return this._value;
+	}
 
-		public boolean isMoving()
+	public int getNextNode()
+	{
+		int ans = -2;
+		if(this._curr_edge == null)
 		{
-			return (this._curr_edge != null);
+			ans = -1;
 		}
+		else
+		{
+			ans = this._curr_edge.getDest();
+		}
+		return ans;
+	}
 
-		public String toString()
-		{
-			String ans = "" + this.getID() + "," + _pos+", " + isMoving() + "," + this.getValue();
-			return ans;
-		}
+	public double getSpeed()
+	{
+		return this._speed;
+	}
 
-		public int getID()
-		{
-			return this._id;
-		}
-	
-		public geo_location getLocation()
-		{
-			return _pos;
-		}
-		
-		public double getValue()
-		{
-			return this._value;
-		}
+	public void setSpeed(double v)
+	{
+		this._speed = v;
+	}
 
-		public int getNextNode()
-		{
-			int ans = -2;
-			if(this._curr_edge == null)
-			{
-				ans = -1;
-			}
-			else
-			{
-				ans = this._curr_edge.getDest();
-			}
-			return ans;
-		}
+	public CL_Pokemon get_curr_fruit()
+	{
+		return _curr_fruit;
+	}
 
-		public double getSpeed()
-		{
-			return this._speed;
-		}
+	public void set_curr_fruit(CL_Pokemon curr_fruit)
+	{
+		this._curr_fruit = curr_fruit;
+	}
 
-		public void setSpeed(double v)
+	public void set_SDT(long ddtt) // TODO is correct???
+	{
+		long ddt = ddtt;
+		try
 		{
-			this._speed = v;
-		}
-
-		public CL_Pokemon get_curr_fruit()
-		{
-			return _curr_fruit;
-		}
-
-		public void set_curr_fruit(CL_Pokemon curr_fruit)
-		{
-			this._curr_fruit = curr_fruit;
-		}
-
-		public void set_SDT(long ddtt) // TODO is correct???
-		{
-			long ddt = ddtt;
 			if(this._curr_edge != null)
 			{
 				double w = get_curr_edge().getWeight();
@@ -177,16 +179,22 @@ public class CL_Agent implements Runnable
 
 				if(this.get_curr_fruit().get_edge() == this.get_curr_edge())
 				{
-					 dist = _curr_fruit.getLocation().distance(this._pos);
+					dist = _curr_fruit.getLocation().distance(this._pos) - dist/10;
 				}
 
 				double norm = dist/de;
-				double dt = w*norm / this.getSpeed(); 
+				double dt = w*norm / this.getSpeed();
 				ddt = (long)(1000.0*dt);
-			}
 
-			this._sg_dt = ddt;
+				System.out.println("agent: " + getID() + ", speed: " + getSpeed() + ", distToGoal: " + w*norm + ", timeToGoal: " + ddt);
+			}
 		}
+		catch (Exception e)
+		{
+		}
+
+		this._sg_dt = ddt;
+	}
 
 	public long get_sg_dt()
 	{
@@ -195,9 +203,9 @@ public class CL_Agent implements Runnable
 	}
 
 	public edge_data get_curr_edge()
-		{
-			return this._curr_edge;
-		}
+	{
+		return this._curr_edge;
+	}
 
 
 	public void update(String json)
@@ -255,7 +263,7 @@ public class CL_Agent implements Runnable
 			{
 				List<node_data> list = ar.getAlgo().shortestPath(getSrcNode(), p.get_edge().getSrc());
 				if(list == null) continue;
-				System.out.println("agent " + getID() + " to edge: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
+				//System.out.println("agent " + getID() + " to edge: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 
 				Stack<Integer> st = new Stack<>();
 
@@ -270,9 +278,11 @@ public class CL_Agent implements Runnable
 				boolean gotcha = false;
 				boolean almostCaught = false;
 
+				int c = 0;
 				while(!gotcha)
 				{
 					ar.updateAgents(ar.getGame().getAgents());
+					c++;
 
 					while(isMoving())
 					{
@@ -303,12 +313,13 @@ public class CL_Agent implements Runnable
 						//System.out.println("already caught!");
 						gotcha = true;
 						unAvailableEdges.remove(p.get_edge());
+						c--;
 					}
 					else if(!st.isEmpty())
 					{
 						int n = st.pop();
 						this.ar.getGame().chooseNextEdge(this._id, n);
-
+						c--;
 						//System.out.println("PULLED NODE: " + n);
 
 //						try
@@ -327,7 +338,7 @@ public class CL_Agent implements Runnable
 						this.ar.getGame().chooseNextEdge(this._id, n);
 
 						almostCaught = true;
-
+						c--;
 //						try
 //						{
 //							Thread.sleep(get_sg_dt());
@@ -341,8 +352,10 @@ public class CL_Agent implements Runnable
 					{
 						gotcha = true;
 						unAvailableEdges.remove(p.get_edge());
+						c--;
 					}
-					else
+
+					if(c > 5) // TODO WHY ARE THEY STUCK ??
 					{
 						break;
 					}
@@ -354,7 +367,7 @@ public class CL_Agent implements Runnable
 					//System.out.println("pokDest:" + p.get_edge().getDest());
 					//System.out.println("srcNode:" + getSrcNode());
 					//System.out.println();
-					System.out.println("agent " + getID());
+					//System.out.println("agent " + getID());
 				}
 			}
 		}
@@ -368,43 +381,49 @@ public class CL_Agent implements Runnable
 
 		dw_graph_algorithms ga = ar.getAlgo();
 
-		synchronized(unAvailableEdges)
+		try
 		{
-			ar.updatePokemons(ar.getGame().getPokemons());
-			ar.updateAgents(ar.getGame().getAgents());
-
-			CL_Pokemon temp;
-
-			for (int i = 0; i < ar.getPokemons().size(); i++)
+			synchronized(unAvailableEdges)
 			{
 				ar.updatePokemons(ar.getGame().getPokemons());
 				ar.updateAgents(ar.getGame().getAgents());
-				double d;
-				temp = ar.getPokemons().get(i);
 
-				if(!unAvailableEdges.contains(temp.get_edge()) && temp.get_edge() != null)
+				CL_Pokemon temp;
+
+				for (int i = 0; i < ar.getPokemons().size(); i++)
 				{
-					try
-					{
-						d = ga.shortestPathDist(getSrcNode(), temp.get_edge().getSrc());
-					}
-					catch (Exception e)
-					{
-						continue;
-					}
+					ar.updatePokemons(ar.getGame().getPokemons());
+					ar.updateAgents(ar.getGame().getAgents());
+					double d;
+					temp = ar.getPokemons().get(i);
 
-					if(d < minDist && d != -1)
+					if(!unAvailableEdges.contains(temp.get_edge()) && temp.get_edge() != null)
 					{
-						minDist = d;
-						p = temp;
+						try
+						{
+							d = ga.shortestPathDist(getSrcNode(), temp.get_edge().getSrc());
+						}
+						catch (Exception e)
+						{
+							continue;
+						}
+
+						if(d < minDist && d != -1)
+						{
+							minDist = d;
+							p = temp;
+						}
 					}
 				}
+				//System.out.println("agent " + getID() + " best pok: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 			}
-			//System.out.println("agent " + getID() + " best pok: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
-
-			this._curr_fruit = p;
-			if(p != null) unAvailableEdges.add(p.get_edge());
 		}
+		catch (Exception e)
+		{
+		}
+
+		this._curr_fruit = p;
+		if(p != null) unAvailableEdges.add(p.get_edge());
 	}
 
 	private boolean stillExist()

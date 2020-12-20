@@ -7,8 +7,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Random;
-
-
 public class Ex2 implements Runnable
 {
     private int scenario_num = 11;
@@ -38,10 +36,34 @@ public class Ex2 implements Runnable
     @Override
     public void run()
     {
+        while(!gui1.getStartGame())
+        {
+            System.out.println("");
+        }
         int scenario_num = gui1.get_level();
         game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
         int id = gui1.get_id();
-        game.login(id);
+        try
+        {
+            game.login(id);
+        }
+        catch(NullPointerException e)
+        {
+            GUI _gui2 = new GUI();
+            GUI warning=gui1.warning("wrong level please start game again ");
+            gui1=_gui2;
+            try {
+                Thread.sleep(4000);
+                warning.frame.dispose(); }
+            catch (InterruptedException interruptedException)
+            {
+                interruptedException.printStackTrace();
+            }
+
+
+            run();
+
+        }
 
         this._game = game;
         init(); // arena settings, placing agents and pokemons.
@@ -80,17 +102,24 @@ public class Ex2 implements Runnable
         }
 
         long minTime = Long.MAX_VALUE;
+        long temp;
         while(_game.isRunning())
         {
             moveAgents(_ar);
 
             for(int i = 0; i < _ar.getAgents().size(); i++)
             {
-                if(_ar.getAgents().get(i).get_sg_dt() < minTime)
+                temp = _ar.getAgents().get(i).get_sg_dt();
+                if(i == 0) minTime = temp;
+
+                if(temp < minTime)
                 {
-                    minTime = _ar.getAgents().get(i).get_sg_dt();
+                    minTime = temp;
                 }
             }
+
+            System.out.println(minTime);
+            System.out.println("----------------------------------------------");
 
             try
             {
@@ -98,7 +127,8 @@ public class Ex2 implements Runnable
                 {
                     _win.repaint();
                 }
-                Thread.sleep((100 < minTime) ? minTime : 100);
+                //Thread.sleep((100 < minTime) ? minTime : 100);
+                Thread.sleep(10);
                 ind++;
             }
             catch(Exception e)

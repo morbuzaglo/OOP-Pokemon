@@ -31,6 +31,7 @@ public class GUI extends JFrame  implements ActionListener{
         panel.setLayout(null);
         uu.setIcon(new ImageIcon("data\\login_gif.gif"));
 
+
         id_field.setBounds(220, 100, 85, 21);
         panel.add(id_field);
 
@@ -81,12 +82,8 @@ public class GUI extends JFrame  implements ActionListener{
         try
         {
             int level = get_level();
-            if(level>=0 && level<24)
-            {
-                return true;
-            }
-            else
-                return false;
+
+
 
 
         }
@@ -94,6 +91,7 @@ public class GUI extends JFrame  implements ActionListener{
         {
             return false;
         }
+        return true;
     }
     public boolean valid_id(TextField id_field)
     {
@@ -120,38 +118,53 @@ public class GUI extends JFrame  implements ActionListener{
     {
         return this.startGame;
     }
+    public void setStartGame(boolean b)
+    {
+        this.startGame=b;
+    }
+    public GUI warning(String s)
+    {
+        GUI warning =new GUI();
+        warning.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        warning.frame.getContentPane().removeAll();
+        warning.frame.repaint();
+        warning.frame.setSize(300,100);
+        warning.frame.setBounds(630,400,300,100);
+        JPanel panel=new JPanel();
+        warning.frame.getContentPane().add(panel, BorderLayout.CENTER);
+        JPanel panel_1 = new JPanel();
+        panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_1.setBounds(150, 150, 60, 20);
+        panel.add(panel_1);
+        panel_1.setLayout(new BorderLayout(0, 0));
+        JLabel warning_label = new JLabel(s);
+        warning_label.setBounds(6, 0, 26, 16);
+        panel_1.add(warning_label);
+        return warning;
+    }
 
     @Override
-    public void actionPerformed (ActionEvent e)
+    public void actionPerformed (ActionEvent A)
     {
-        if (e.getSource() == button)
+        if (A.getSource() == button)
         {
-            if(valid_level(level_field)&&valid_id(id_field))
+            if(valid_id(id_field)&&valid_level(level_field))
             {
-                this.startGame = true;
-                frame.dispose();
+
+                    setStartGame(true);
+                    frame.dispose();
+
             }
             else
             {
-             GUI warning =new GUI();
-             warning.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-             warning.frame.getContentPane().removeAll();
-             warning.frame.repaint();
-             warning.frame.setSize(300,100);
-             warning.frame.setBounds(630,400,300,100);
-             JPanel panel=new JPanel();
-             warning.frame.getContentPane().add(panel, BorderLayout.CENTER);
-             JPanel panel_1 = new JPanel();
-             panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-             panel_1.setBounds(150, 150, 60, 20);
-             panel.add(panel_1);
-             panel_1.setLayout(new BorderLayout(0, 0));
-             JLabel warning_label = new JLabel("incorrect level or id");
-             warning_label.setBounds(6, 0, 26, 16);
-             panel_1.add(warning_label);
-
-
+               warning("wrong id or level, try again");
             }
+
+
         }
+
     }
+
 }
+
+
