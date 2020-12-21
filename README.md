@@ -1,7 +1,7 @@
 # OOP COURSE  - POKEMON GAME (EXERCISE 2)
 
 This game visualize an implimentation of the multi-agents problem - in the pokemon environment.
-![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/login_gif.gif?raw=true)
+![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/Pokemon-Logo.gif?raw=true)
 
 
 ## DESCRIPTION:
@@ -18,6 +18,10 @@ The objective, of course, is to get the best score in the time left until the en
 3. a window should come up. unter your ID (if you would like) and the desired level (0-23).
 
 ![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/idandlevel.jpg?raw=true)
+
+4. a different window of the game should come up. the agents will start collecting the fruits (pokemons) autonomously, by our planning algorithms (shown in wiki). you can see the time left until the end of the game, the current score of the agents and the number of moves that as been made from the beginning.
+
+![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/aren1.jpg?raw=true)
 
 
 
