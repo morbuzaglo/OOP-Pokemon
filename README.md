@@ -23,6 +23,11 @@ The objective, of course, is to get the best score in the time left until the en
 
 ![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/aren1.jpg?raw=true)
 
+5. the game will exit itself when the time passed, and the results will load to the server.
+
+## RESULTS:
+
+
 
 
 ## COURSE GITHUB:
