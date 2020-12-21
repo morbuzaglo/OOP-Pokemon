@@ -95,6 +95,7 @@ public class Ex2 implements Runnable {
         }
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.
+        System.exit(0);
     }
 
     private void init() {
