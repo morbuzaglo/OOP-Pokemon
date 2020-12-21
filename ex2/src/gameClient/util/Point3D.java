@@ -6,7 +6,10 @@ package gameClient.util;
 import api.geo_location;
 
 import java.io.Serializable;
-
+/**
+ *
+ *
+ */
 public class Point3D implements geo_location, Serializable{
 	private static final long serialVersionUID = 1L;
 	/**

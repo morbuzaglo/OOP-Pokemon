@@ -267,8 +267,6 @@ public class DWGraph_Algo implements dw_graph_algorithms
 				for(int i=0;i<edgesList.length();i++) // going over edge list and connecting existing nodes to together
 				{
 					g_copy.connect(edgesList.getJSONObject(i).getInt("src"), edgesList.getJSONObject(i).getInt("dest"), edgesList.getJSONObject(i).getDouble("w"));
-
-
 				}
 
 				init(g_copy); // init graph to be the new graph
@@ -392,7 +390,7 @@ public class DWGraph_Algo implements dw_graph_algorithms
 		}
 		catch (Exception e)
 		{
-			System.out.println(e + ", Problem: Graph_Algo -> private: Dijkstra");
+			e.printStackTrace();
 		}
 	}
 
