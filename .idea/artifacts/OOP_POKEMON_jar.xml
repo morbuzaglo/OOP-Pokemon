@@ -2,7 +2,7 @@
   <artifact type="jar" name="OOP-POKEMON:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/OOP_POKEMON_jar</output-path>
     <root id="archive" name="OOP-POKEMON.jar">
-      <element id="module-output" name="OOP-POKEMON" />
+      <element id="module-output" name="EX2" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.4.2/junit-jupiter-5.4.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.4.2/junit-jupiter-api-5.4.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" path-in-jar="/" />

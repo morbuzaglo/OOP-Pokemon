@@ -104,7 +104,7 @@ public class Arena
 		dw_graph_algorithms ga = new DWGraph_Algo();
 		this.ga = ga;
 		ga.init(g);
-		String fileName = "JsonGraph.json";
+		String fileName = "data\\JsonGraph.json";
 		CreateFile(fileName, gStr);
 		ga.load(fileName);
 		this._graph = ga.getGraph();
