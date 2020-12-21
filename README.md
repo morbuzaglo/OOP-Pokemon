@@ -7,13 +7,15 @@ This game visualize an implimentation of the multi-agents problem - in the pokem
 ## DESCRIPTION:
 
 The pokemons (the fruits) are divided randomly on a directed and weighted graph, while the Team Rocket (the agents) try to catch as much pokemos as they can, until the game ends.
-There are 23 different arenas that the game can be played in. 
+There are 23 different arenas that the game can be played in.
+The objective, of course, is to get the best score in the time left until the end of the game - with the smallest number of "moves" (calls to the server).
 
 
 ## RUNNING THE GAME:
 
 1. Clone the project.
 2. 
+3.
 
 
 
