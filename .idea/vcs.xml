@@ -2,5 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Ariel_OOP_Ex2.wiki" vcs="Git" />
   </component>
 </project>
