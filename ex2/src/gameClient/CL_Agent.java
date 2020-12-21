@@ -8,16 +8,15 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-/**
- *
- *
- */
+
 public class CL_Agent implements Runnable
 {
 	public static final double EPS = 0.0001;
 	private static int _count = 0;
 	private static int _seed = 3331;
+
 	private int _id;
+	private int lastNode;
 	private double searchRadius;
 	private Point3D searchPoint = new Point3D(0,0);
 	private geo_location _pos;
@@ -218,7 +217,7 @@ public class CL_Agent implements Runnable
 		this._curr_fruit = curr_fruit;
 	}
 	/**
-	 *sets sleep ti,e for agent
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public void set_SDT(long ddtt) // TODO is correct???
@@ -235,16 +234,16 @@ public class CL_Agent implements Runnable
 				double de = src.distance(dest);  // src -> dest
 				double dist = _pos.distance(dest); // _curr_pos -> dest
 
-				if(this.get_curr_fruit().get_edge() == this.get_curr_edge())
+				if(this.get_curr_fruit().get_edge() == this.get_curr_edge() && stillExist())
 				{
-					dist = _curr_fruit.getLocation().distance(this._pos) - dist/10;
+					dist = _curr_fruit.getLocation().distance(this._pos);
 				}
 
 				double norm = dist/de;
 				double dt = w*norm / this.getSpeed();
 				ddt = (long)(1000.0*dt);
 
-				System.out.println("agent: " + getID() + ", speed: " + getSpeed() + ", distToGoal: " + w*norm + ", timeToGoal: " + ddt);
+				//System.out.println("agent: " + getID() + ", speed: " + getSpeed() + ", distToGoal: " + w*norm + ", timeToGoal: " + ddt);
 			}
 		}
 		catch (Exception e)
@@ -254,8 +253,8 @@ public class CL_Agent implements Runnable
 		this._sg_dt = ddt;
 	}
 	/**
-	 *gets sleep time for agent
-	 * @return sleep time
+	 *constructor of agent using arena and starting node to place him
+	 *
 	 */
 	public long get_sg_dt()
 	{
@@ -263,8 +262,8 @@ public class CL_Agent implements Runnable
 		return _sg_dt;
 	}
 	/**
-	 *gets current edge agent is on
-	 * @return edge
+	 *constructor of agent using arena and starting node to place him
+	 *
 	 */
 	public edge_data get_curr_edge()
 	{
@@ -272,7 +271,7 @@ public class CL_Agent implements Runnable
 	}
 
 	/**
-	 *updates agent traits using json
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public void update(String json)
@@ -308,7 +307,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *gets image for agent
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public ImageIcon get_image()
@@ -316,7 +315,7 @@ public class CL_Agent implements Runnable
 		return agent;
 	}
 	/**
-	 *run for agents thread
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	@Override
@@ -324,7 +323,6 @@ public class CL_Agent implements Runnable
 	{
 		while(ar.getGame().isRunning()) // while game IsRunning
 		{
-			//Ex2.moveAgents(ar);
 			this._curr_fruit = null;
 			ar.updatePokemons(ar.getGame().getPokemons());
 
@@ -336,117 +334,83 @@ public class CL_Agent implements Runnable
 			{
 				List<node_data> list = ar.getAlgo().shortestPath(getSrcNode(), p.get_edge().getSrc());
 				if(list == null) continue;
-				//System.out.println("agent " + getID() + " to edge: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 
 				Stack<Integer> st = new Stack<>();
 
-				//System.out.print("Path of agent" + getID() + ": ");
+				System.out.print(getID() + ": ");
 				for(int i =  list.size()-1; i > 0; i--)
 				{
 					st.push(list.get(i).getKey());
-					//System.out.print(list.get(i).getKey() + " ");
+					System.out.print(list.get(i).getKey() + " ->" );
 				}
-				//System.out.println();
+				System.out.println();
 
 				boolean gotcha = false;
 				boolean almostCaught = false;
 
-				int c = 0;
+				this.lastNode = getSrcNode();
 				while(!gotcha)
 				{
-					ar.updateAgents(ar.getGame().getAgents());
-					c++;
-
-					while(isMoving())
-					{
-						//System.out.println("wait");
-						ar.updateAgents(ar.getGame().getAgents());
-//						try
-//						{
-//							Thread.sleep(get_sg_dt());
-//						}
-//						catch (InterruptedException e)
-//						{
-//							e.printStackTrace();
-//						}
-
-						//Ex2.moveAgents(ar);
-					}
-
 					try
 					{
-						ar.updatePokemons(ar.getGame().getPokemons());
+						ar.updateAgents(ar.getGame().getAgents());
+
+						int ind = 0;
+						while(isMoving())
+						{
+							ar.updateAgents(ar.getGame().getAgents());
+							//if(ind%1000 == 0) System.out.println("timeToEnd: " + ar.getGame().timeToEnd() + ", id:" + getID() + ": sameEdge?: " + (get_curr_edge() == get_curr_fruit().get_edge()) + ", timeToNext: " + get_sg_dt());
+							ind++;
+						}
+
+						try
+						{
+							ar.updatePokemons(ar.getGame().getPokemons());
+						}
+						catch (Exception e)
+						{
+						}
+
+						if(!stillExist())
+						{
+							gotcha = true;
+							unAvailableEdges.remove(p.get_edge());
+						}
+						else if(!st.isEmpty() && getSrcNode() == this.lastNode)
+						{
+							int n = st.pop();
+							this.lastNode = n;
+							this.ar.getGame().chooseNextEdge(this._id, n);
+							//System.out.println(getID() + ": go to -> " + n);
+						}
+						else if(!almostCaught && getSrcNode() == p.get_edge().getSrc()) // path stack is empty
+						{
+							int n = p.get_edge().getDest();
+							this.ar.getGame().chooseNextEdge(this._id, n);
+							//System.out.println(getID() + ": go to -> " + n);
+
+							almostCaught = true;
+						}
+
+						if(st.isEmpty() && almostCaught && getSrcNode() == p.get_edge().getDest())
+						{
+							gotcha = true;
+							unAvailableEdges.remove(p.get_edge());
+						}
+
 					}
 					catch (Exception e)
 					{
+
 					}
 
-					if(!stillExist())
-					{
-						//System.out.println("already caught!");
-						gotcha = true;
-						unAvailableEdges.remove(p.get_edge());
-						c--;
-					}
-					else if(!st.isEmpty())
-					{
-						int n = st.pop();
-						this.ar.getGame().chooseNextEdge(this._id, n);
-						c--;
-						//System.out.println("PULLED NODE: " + n);
-
-//						try
-//						{
-//							Thread.sleep(get_sg_dt());
-//						}
-//						catch (InterruptedException e)
-//						{
-//							e.printStackTrace();
-//						}
-					}
-					else if(!almostCaught && getSrcNode() == p.get_edge().getSrc()) // path stack is empty
-					{
-						//System.out.println("src node: " + getSrcNode());
-						int n = p.get_edge().getDest();
-						this.ar.getGame().chooseNextEdge(this._id, n);
-
-						almostCaught = true;
-						c--;
-//						try
-//						{
-//							Thread.sleep(get_sg_dt());
-//						}
-//						catch (InterruptedException e)
-//						{
-//							e.printStackTrace();
-//						}
-					}
-					else if(almostCaught && getSrcNode() == p.get_edge().getDest())
-					{
-						gotcha = true;
-						unAvailableEdges.remove(p.get_edge());
-						c--;
-					}
-
-					if(c > 5) // TODO WHY ARE THEY STUCK ??
-					{
-						break;
-					}
-
-					//System.out.println("almostCaught:" + almostCaught);
-					//System.out.println("gotcha:" + gotcha);
-					//System.out.println("nextNode:" + getNextNode());
-
-					//System.out.println("pokDest:" + p.get_edge().getDest());
-					//System.out.println("srcNode:" + getSrcNode());
-					//System.out.println();
-					//System.out.println("agent " + getID());
 				}
 			}
 		}
 	}
+
 	/**
-	 *choose best poke for this agent and its syncronized
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	synchronized private void bestPok()
@@ -491,7 +455,6 @@ public class CL_Agent implements Runnable
 						}
 					}
 				}
-				//System.out.println("agent " + getID() + " best pok: " + p.get_edge().getSrc() + "->" + p.get_edge().getDest());
 			}
 		}
 		catch (Exception e)
@@ -502,8 +465,8 @@ public class CL_Agent implements Runnable
 		if(p != null) unAvailableEdges.add(p.get_edge());
 	}
 	/**
-	 *checck if current fruit is in the arena
-	 * @returns boolean
+	 *constructor of agent using arena and starting node to place him
+	 *
 	 */
 	private boolean stillExist()
 	{
@@ -514,7 +477,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 * unused function to check if poki is in arena
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	private boolean isInArea(CL_Pokemon pok)
@@ -529,7 +492,7 @@ public class CL_Agent implements Runnable
 		}
 	}
 	/**
-	 *sets search radius
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public void setSearchRadius(double R)
@@ -537,15 +500,15 @@ public class CL_Agent implements Runnable
 		this.searchRadius = R;
 	}
 	/**
-	 *returns search radius
-	 * @return search radius
+	 *constructor of agent using arena and starting node to place him
+	 *
 	 */
 	public double getSearchRadius()
 	{
 		return this.searchRadius;
 	}
 	/**
-	 *sets search point
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public void setSearchPoint(Point3D p)
@@ -553,7 +516,7 @@ public class CL_Agent implements Runnable
 		this.searchPoint = p;
 	}
 	/**
-	 *gets 3d point
+	 *constructor of agent using arena and starting node to place him
 	 *
 	 */
 	public Point3D getSearchPoint()

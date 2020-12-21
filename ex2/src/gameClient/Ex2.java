@@ -1,14 +1,12 @@
 package gameClient;
+import gameClient.MyFrame;
 import Server.Game_Server_Ex2;
 import api.game_service;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Random;
-/**
- *
- *
- */
 public class Ex2 implements Runnable {
     private static int scenario_num = 11;
     private static int ID = 318670403;
@@ -19,18 +17,25 @@ public class Ex2 implements Runnable {
     private static GUI gui1;
     public static boolean isRunning;
     public static boolean cmd=false;
-    public static void main(String[] a)
-    {
+
+    /**
+     *
+     * main where the login system starts
+     */
+    public static void main(String[] a) {
         for(String b:a)
         {
             System.out.println(b);
         }
         if(a.length==0)
         {
+
             cmd=false;
             GUI _gui1 = new GUI();
             gui1 = _gui1;
+
             int ind = 0;
+
             while (!gui1.getStartGame())
             {
                 System.out.println("");
@@ -49,18 +54,22 @@ public class Ex2 implements Runnable {
 
             catch(Exception e)
             {
-            System.err.println("wrong id or level running default id=318670403 and level 11 ");
-            scenario_num = 11;
-            ID = 318670403;
+                System.err.println("wrong id or level running default id=318670403 and level 11 ");
+                scenario_num = 11;
+                ID = 318670403;
             }
         }
         Thread client = new Thread(new Ex2());
         client.start();
     }
-
+    /**
+     *
+     * run function for main thread
+     */
     @Override
     public void run()
     {
+
         if(!cmd)
         {
             while (!gui1.getStartGame()||cmd)
@@ -83,7 +92,10 @@ public class Ex2 implements Runnable {
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 }
+
+
                 run();
+
             }
             this._game = game;
         }
@@ -92,12 +104,15 @@ public class Ex2 implements Runnable {
             game_service game = Game_Server_Ex2.getServer(scenario_num);
             game.login(ID);
             this._game = game;
+
         }
         init(); // arena settings, placing agents and pokemons.
         playing(); // start the game, moving agents decisions.
-        System.exit(0);
     }
-
+    /**
+     *
+     * inits game
+     */
     private void init() {
         Arena ar = new Arena(this._game);
         this._ar = ar;
@@ -110,8 +125,12 @@ public class Ex2 implements Runnable {
         _win.show();
         AgentsFirstSet();
     }
-
-    private void playing() {
+    /**
+     *
+     * main main playing function for ex2
+     */
+    private void playing()
+    {
         _game.startGame();
         _win.setTitle("Ex2 Pokemon Game - scenario: " + this.scenario_num);
         int ind = 0;
@@ -121,7 +140,8 @@ public class Ex2 implements Runnable {
 
         moveAgents(this._ar);
 
-        for (int i = 0; i < _ar.getAgents().size(); i++) {
+        for (int i = 0; i < _ar.getAgents().size(); i++)
+        {
             Thread th = new Thread(_ar.getAgents().get(i));
             th.start();
         }
@@ -129,44 +149,64 @@ public class Ex2 implements Runnable {
 
         long minTime = Long.MAX_VALUE;
         long temp;
+        boolean tooClose;
 
-        while (_game.isRunning()) {
+        while (_game.isRunning())
+        {
             moveAgents(_ar);
+            tooClose = false;
 
-            for (int i = 0; i < _ar.getAgents().size(); i++) {
-                temp = _ar.getAgents().get(i).get_sg_dt();
+            for (int i = 0; i < _ar.getAgents().size(); i++)
+            {
+                CL_Agent ag = _ar.getAgents().get(i);
+                if(ag.get_curr_edge() != null && ag.get_curr_edge() == ag.get_curr_fruit().get_edge() && ag.get_curr_edge().getWeight()/ag.getSpeed() < 0.4)
+                {
+                    tooClose = true;
+                }
+
+                temp = ag.get_sg_dt();
                 if (i == 0) minTime = temp;
 
-                if (temp < minTime) {
+                if (temp < minTime)
+                {
                     minTime = temp;
                 }
             }
 
-            System.out.println(minTime);
-            System.out.println("----------------------------------------------");
+            // System.out.println(minTime);
+            //System.out.println("----------------------------------------------");
 
-            try {
-                if (ind % 1 == 0) {
+            try
+            {
+                if (ind % 1 == 0)
+                {
                     _win.repaint();
                 }
-                //Thread.sleep((100 < minTime) ? minTime : 100);
-                Thread.sleep(100);
+                if (tooClose)
+                {
+                    Thread.sleep(60);
+                }
+                else Thread.sleep((100 < minTime) ? minTime : 100);
                 ind++;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
+        }
 
-    }
 
-
-    String res = _game.toString();
+        String res = _game.toString();
 
         System.out.println(res);
         System.exit(0);
-}
+    }
 
-             /* * * * * * * * * * * * * * * DECISION FUNCTIONS * * * * * * * * * * * * * * * * * * */
-
+    /* * * * * * * * * * * * * * * DECISION FUNCTIONS * * * * * * * * * * * * * * * * * * */
+    /**
+     *
+     * setting first places for agents
+     */
     private void AgentsFirstSet()
     {
         String info = _game.toString();
@@ -199,7 +239,10 @@ public class Ex2 implements Runnable {
             e.printStackTrace();
         }
     }
-
+    /**
+     *
+     * move agents
+     */
     public static void moveAgents(Arena _ar)  // TODO implement moveAgents!
     {
         try
@@ -215,8 +258,7 @@ public class Ex2 implements Runnable {
         }
         catch (Exception e)
         {
-                return;
+            return;
         }
     }
 }
-
