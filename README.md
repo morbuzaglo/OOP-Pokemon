@@ -3,6 +3,9 @@
 This game visualize an implimentation of the multi-agents problem - in the pokemon environment.
 ![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/Pokemon-Logo.png?raw=true)
 
+Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
+--- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
+Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
 
 ## DESCRIPTION:
 
