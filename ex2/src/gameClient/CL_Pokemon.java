@@ -3,7 +3,10 @@ import api.edge_data;
 import gameClient.util.Point3D;
 
 import javax.swing.*;
-
+/**
+ *
+ *
+ */
 public class CL_Pokemon
 {
 	private edge_data _edge;

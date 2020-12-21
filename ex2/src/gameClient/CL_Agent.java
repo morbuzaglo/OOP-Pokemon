@@ -8,7 +8,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
+/**
+ *
+ *
+ */
 public class CL_Agent implements Runnable
 {
 	public static final double EPS = 0.0001;

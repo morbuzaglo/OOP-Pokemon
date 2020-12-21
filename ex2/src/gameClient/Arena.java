@@ -15,9 +15,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+/**
+ *
+ *
+ */
 public class Arena
 {
+	/**
+	 *
+	 *
+	 */
 	public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
 	private game_service game;
 	private directed_weighted_graph _graph;
@@ -40,6 +47,10 @@ public class Arena
 	/**
 	 *main constructor using game service
 	 *
+	 */
+	/**
+	 *
+	 * @param game
 	 */
 	public Arena(game_service game)
 	{

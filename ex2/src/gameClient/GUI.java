@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-
+/**
+ *
+ *
+ */
 public class GUI extends JFrame  implements ActionListener{
      JFrame frame;
     TextField id_field = new TextField();
