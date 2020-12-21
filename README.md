@@ -14,8 +14,10 @@ The objective, of course, is to get the best score in the time left until the en
 ## RUNNING THE GAME:
 
 1. Clone the project.
-2. 
-3.
+2. get in the project folder, and than -> out -> artifacts -> OOP_POKEMON.jar.
+3. a window should come up. unter your ID (if you would like) and the desired level (0-23).
+
+![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/idandlevel.jpg?raw=true)
 
 
 
