@@ -1,4 +1,4 @@
-# OOP COURSE  - POKEMON GAME (EXERCISE 2)
+# OOP COURSE  - POKEMON GAME
 
 This game visualize an implimentation of the multi-agents problem - in the pokemon environment.
 ![alt text](https://github.com/morbuzaglo/OOP-POKEMON/blob/main/data/Pokemon-Logo.png?raw=true)
